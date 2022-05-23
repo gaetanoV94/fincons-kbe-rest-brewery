@@ -1,94 +1,98 @@
 package guru.springframework.sfgrestbrewery.web.controller;
 
-import guru.springframework.sfgrestbrewery.services.BeerService;
-import guru.springframework.sfgrestbrewery.web.model.BeerDto;
-import guru.springframework.sfgrestbrewery.web.model.BeerPagedList;
-import guru.springframework.sfgrestbrewery.web.model.BeerStyleEnum;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
+import guru.springframework.sfgrestbrewery.domain.Beer;
+import guru.springframework.sfgrestbrewery.domain.BeerStyleEnum;
+import guru.springframework.sfgrestbrewery.exception.BeerNotFoundException;
+import guru.springframework.sfgrestbrewery.services.BeerService;
+import lombok.extern.slf4j.Slf4j;
 
-/**
- * Created by jt on 2019-04-20.
- */
-@RequiredArgsConstructor
 @RequestMapping("/api/v1/")
 @RestController
+@ResponseBody
+@Slf4j
 public class BeerController {
-
-    private static final Integer DEFAULT_PAGE_NUMBER = 0;
-    private static final Integer DEFAULT_PAGE_SIZE = 25;
-
-    private final BeerService beerService;
-
-    @GetMapping(produces = { "application/json" }, path = "beer")
-    public ResponseEntity<BeerPagedList> listBeers(@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-                                                   @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                                                   @RequestParam(value = "beerName", required = false) String beerName,
-                                                   @RequestParam(value = "beerStyle", required = false) BeerStyleEnum beerStyle,
-                                                   @RequestParam(value = "showInventoryOnHand", required = false) Boolean showInventoryOnHand){
-
-        if (showInventoryOnHand == null) {
-            showInventoryOnHand = false;
-        }
-
-        if (pageNumber == null || pageNumber < 0){
-            pageNumber = DEFAULT_PAGE_NUMBER;
-        }
-
-        if (pageSize == null || pageSize < 1) {
-            pageSize = DEFAULT_PAGE_SIZE;
-        }
-
-        BeerPagedList beerList = beerService.listBeers(beerName, beerStyle, PageRequest.of(pageNumber, pageSize), showInventoryOnHand);
-
-        return new ResponseEntity<>(beerList, HttpStatus.OK);
-    }
-
-    @GetMapping("beer/{beerId}")
-    public ResponseEntity<BeerDto> getBeerById(@PathVariable("beerId") UUID beerId,
-                                               @RequestParam(value = "showInventoryOnHand", required = false) Boolean showInventoryOnHand){
-        if (showInventoryOnHand == null) {
-            showInventoryOnHand = false;
-        }
-
-        return new ResponseEntity<>(beerService.getById(beerId, showInventoryOnHand), HttpStatus.OK);
-    }
-
-    @GetMapping("beerUpc/{upc}")
-    public ResponseEntity<BeerDto> getBeerByUpc(@PathVariable("upc") String upc){
-        return new ResponseEntity<>(beerService.getByUpc(upc), HttpStatus.OK);
-    }
-
-    @PostMapping(path = "beer")
-    public ResponseEntity saveNewBeer(@RequestBody @Validated BeerDto beerDto){
-
-        BeerDto savedBeer = beerService.saveNewBeer(beerDto);
-
-        return ResponseEntity
-                .created(UriComponentsBuilder
-                        .fromHttpUrl("http://api.springframework.guru/api/v1/beer/" + savedBeer.getId().toString())
-                        .build().toUri())
-                .build();
-    }
-
-    @PutMapping("beer/{beerId}")
-    public ResponseEntity updateBeerById(@PathVariable("beerId") UUID beerId, @RequestBody @Validated BeerDto beerDto){
-        return new ResponseEntity<>(beerService.updateBeer(beerId, beerDto), HttpStatus.NO_CONTENT);
-    }
-
-    @DeleteMapping("beer/{beerId}")
-    public ResponseEntity<Void> deleteBeerById(@PathVariable("beerId") UUID beerId){
-
-        beerService.deleteBeerById(beerId);
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+	
+	@Autowired
+	private BeerService beerService;
+	
+	@GetMapping(value = "beers")
+	public ResponseEntity<List<Beer>> getBeers(){
+		log.info("Getting all beers from the Database");
+		final Iterable<Beer> beerIterable = beerService.getAllBeers();
+		final List<Beer> beers = StreamSupport
+				.stream(beerIterable.spliterator(), false)
+				.collect(Collectors.toList());
+		return new ResponseEntity<List<Beer>>(beers, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "get-beer-from-id/{id}")
+	
+	public ResponseEntity<Beer> getBeerById(@PathVariable(name = "id") final Integer beerId){
+		log.info("Getting beer with beerId {} from the Database.", beerId);
+		final Beer beer = beerService.getBeerById(beerId)
+				.orElseThrow(() -> new BeerNotFoundException
+					("Beer with beerId " + beerId 
+							+ " not found in the Database"));
+		return new ResponseEntity<Beer>(beer, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "get-beer-from-name/{beerName}")
+	
+	public ResponseEntity<List<Beer>> getBeersByBeerName(@PathVariable(name = "beerName") String beerName){
+		log.info("Getting beer(s) for name {} from the Database", beerName);
+		final List<Beer> beersByName = beerService.findAllByBeerName(beerName);
+		return new ResponseEntity<List<Beer>>(beersByName, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "get-beer-from-beer-style")
+	public ResponseEntity<List<Beer>> getBeersFromBeerStyle(@RequestParam("style") BeerStyleEnum beerStyle){
+		final Iterable<Beer> beerIterable = beerService.findAllByBeerStyle(beerStyle);
+		final List<Beer> beers = StreamSupport
+				.stream(beerIterable.spliterator(), false)
+				.collect(Collectors.toList());
+		return new ResponseEntity<List<Beer>>(beers, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "get-beer-from-upc/{beerUpc}")
+	
+	public ResponseEntity<List<Beer>> getBeersFromUpc(@PathVariable(name = "beerUpc") String upc){
+		log.info("Getting beer(s) for upc {} from the Database", upc);
+		final List<Beer> beerByUpc = beerService.findByUpc(upc);
+		return new ResponseEntity<List<Beer>>(beerByUpc, HttpStatus.OK);
+	}
+	
+	@PostMapping(value = "save-new-beer")
+	
+	public ResponseEntity<Void> saveNewBeer(@RequestBody Beer beer){
+		log.info("Saving new beer in the Database");
+		beerService.save(beer);
+		return new ResponseEntity<Void>(HttpStatus.CREATED);
+	}
+	
+	@DeleteMapping(value = "delete-beer/{beerId}")
+	
+	public ResponseEntity<Void> deleteBeerById(@PathVariable(name = "beerId") Integer beerId){
+		log.info("Deleting beer with beerId {} from the Database", beerId);
+		beerService.deleteBeerById(beerId);
+		log.info("Record with beerId {} has been deleted", beerId);
+		return new ResponseEntity<Void>(HttpStatus.OK);
+	}
 
 }

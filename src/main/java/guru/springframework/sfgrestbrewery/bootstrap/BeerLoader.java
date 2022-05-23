@@ -1,26 +1,22 @@
 package guru.springframework.sfgrestbrewery.bootstrap;
 
-import guru.springframework.sfgrestbrewery.domain.Beer;
-import guru.springframework.sfgrestbrewery.repositories.BeerRepository;
-import guru.springframework.sfgrestbrewery.web.model.BeerStyleEnum;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Random;
 
-/**
- * Created by jt on 3/7/21.
- */
-@Slf4j
-@RequiredArgsConstructor
-@Component
-public class BeerLoader implements CommandLineRunner {
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
-    public static final String BEER_1_UPC = "0631234200036";
+import guru.springframework.sfgrestbrewery.domain.Beer;
+import guru.springframework.sfgrestbrewery.domain.BeerStyleEnum;
+import guru.springframework.sfgrestbrewery.repositories.BeerRepository;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Component
+public class BeerLoader implements CommandLineRunner{
+	
+	public static final String BEER_1_UPC = "0631234200036";
     public static final String BEER_2_UPC = "9122089364369";
     public static final String BEER_3_UPC = "0083783375213";
     public static final String BEER_4_UPC = "4666337557578";
@@ -50,9 +46,12 @@ public class BeerLoader implements CommandLineRunner {
     public static final String BEER_28_UPC = "1350188843012";
     public static final String BEER_29_UPC = "0986442492927";
     public static final String BEER_30_UPC = "8670687641074";
-
-
+    
     private final BeerRepository beerRepository;
+    
+    public BeerLoader(BeerRepository repo) {
+    	this.beerRepository = repo;
+    }
 
     @Override
     public void run(String... args) throws Exception {

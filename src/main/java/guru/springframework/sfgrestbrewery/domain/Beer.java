@@ -1,51 +1,63 @@
 package guru.springframework.sfgrestbrewery.domain;
 
-import guru.springframework.sfgrestbrewery.web.model.BeerStyleEnum;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Version;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.UUID;
-
-/**
- * Created by jt on 2019-05-25.
- */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @Entity
+@Table(name = "Beers")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Beer {
-
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Type(type="org.hibernate.type.UUIDCharType")
-    @Column(length = 36, columnDefinition = "varchar", updatable = false, nullable = false)
-    private UUID id;
+	
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @Version
+    @Column(name = "version")
     private Long version;
 
+    @Column(name = "beer_name")
     private String beerName;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "beer_style")
     private BeerStyleEnum beerStyle;
+    
+    @Column(name = "upc")
     private String upc;
 
+    @Column(name = "quantity_on_hand")
     private Integer quantityOnHand;
+    
+    @Column(name = "price")
     private BigDecimal price;
 
     @CreationTimestamp
-    @Column(updatable = false)
+    @Column(name = "created_date", updatable = false)
     private Timestamp createdDate;
 
     @UpdateTimestamp
     private Timestamp lastModifiedDate;
+
 }

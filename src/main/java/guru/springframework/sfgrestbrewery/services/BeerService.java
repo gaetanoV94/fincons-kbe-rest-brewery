@@ -1,25 +1,54 @@
 package guru.springframework.sfgrestbrewery.services;
 
-import guru.springframework.sfgrestbrewery.web.model.BeerDto;
-import guru.springframework.sfgrestbrewery.web.model.BeerPagedList;
-import guru.springframework.sfgrestbrewery.web.model.BeerStyleEnum;
-import org.springframework.data.domain.PageRequest;
+import java.util.List;
+import java.util.Optional;
 
-import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-/**
- * Created by jt on 2019-04-20.
- */
-public interface BeerService {
-    BeerPagedList listBeers(String beerName, BeerStyleEnum beerStyle, PageRequest pageRequest, Boolean showInventoryOnHand);
+import guru.springframework.sfgrestbrewery.domain.Beer;
+import guru.springframework.sfgrestbrewery.domain.BeerStyleEnum;
+import guru.springframework.sfgrestbrewery.repositories.BeerRepository;
 
-    BeerDto getById(UUID beerId, Boolean showInventoryOnHand);
+@Service
+public class BeerService {
+	
+	@Autowired
+	private BeerRepository beerRepository;
+	
+	public void save(final Beer beer) {
+		beerRepository.save(beer);
+	}
+	
+	public long getBeerCount() {
+		return beerRepository.count();
+	}
+	
+	public Iterable<Beer> getAllBeers(){
+		return beerRepository.findAll();
+	}
+	
+	public Optional<Beer> getBeerById(final Integer beerId){
+		return beerRepository.findById(beerId);
+	}
+	
+	public List<Beer> findAllByBeerName(String beerName){
+		return beerRepository.findAllByBeerName(beerName);
+	}
+	
+	public Iterable<Beer> findAllByBeerStyle(BeerStyleEnum beerStyle){
+		return beerRepository.findAllByBeerStyle(beerStyle.name());
+	}
+	
+	public List<Beer> findAllByBeerNameAndBeerStyle(String beerName, BeerStyleEnum beerStyle){
+		return beerRepository.findAllByBeerNameAndBeerStyle(beerName, beerStyle);
+	}
 
-    BeerDto saveNewBeer(BeerDto beerDto);
-
-    BeerDto updateBeer(UUID beerId, BeerDto beerDto);
-
-    BeerDto getByUpc(String upc);
-
-    void deleteBeerById(UUID beerId);
+    public List<Beer> findByUpc(String upc) {
+    	return beerRepository.findByUpc(upc);
+    }
+    
+    public void deleteBeerById(Integer beerId) {
+    	beerRepository.deleteById(beerId);
+    }
 }
