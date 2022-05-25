@@ -25,6 +25,13 @@ import guru.springframework.sfgrestbrewery.service.UserService;
 		// jsr250Enabled = true,
 		prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
+	
+	private static final String[] PUBLIC_URLS = {
+			"/v2/api-docs",
+			"/swagger-resources/**",
+			"/swagger-ui/**",
+			"/webjars/**"
+	};
 
 	@Autowired
 	UserService userDetailsService;
@@ -63,6 +70,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		.and()
 		.authorizeRequests()
+		.antMatchers(PUBLIC_URLS)
+		.permitAll()
 		.antMatchers("/api/auth/**")
 		.permitAll()
 		.antMatchers("/api/test/**")
