@@ -1,14 +1,13 @@
-package guru.springframework.sfgrestbrewery;
-
+package fincons.academy;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-public class KbeRestBreweryApplicationTests {
+class JavaApplicationTests {
 
 	@Test
-	public void contextLoads() {
+	void contextLoads() {
 	}
 
 }

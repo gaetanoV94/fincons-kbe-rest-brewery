@@ -1,17 +1,18 @@
 package guru.springframework.sfgrestbrewery.services;
 
-import guru.springframework.sfgrestbrewery.web.model.BeerDto;
-import guru.springframework.sfgrestbrewery.web.model.BeerPagedList;
-import guru.springframework.sfgrestbrewery.web.model.BeerStyleEnum;
-import org.springframework.data.domain.PageRequest;
-
 import java.util.UUID;
 
-/**
- * Created by jt on 2019-04-20.
- */
+import org.springframework.data.domain.PageRequest;
+
+import guru.springframework.sfgrestbrewery.model.BeerDto;
+import guru.springframework.sfgrestbrewery.model.BeerPagedList;
+import guru.springframework.sfgrestbrewery.model.BeerStyleEnum;
+
+
+
 public interface BeerService {
-    BeerPagedList listBeers(String beerName, BeerStyleEnum beerStyle, PageRequest pageRequest, Boolean showInventoryOnHand);
+	
+	BeerPagedList listBeers(String beerName, BeerStyleEnum beerStyle, PageRequest pageRequest, Boolean showInventoryOnHand);
 
     BeerDto getById(UUID beerId, Boolean showInventoryOnHand);
 
@@ -22,4 +23,5 @@ public interface BeerService {
     BeerDto getByUpc(String upc);
 
     void deleteBeerById(UUID beerId);
+
 }

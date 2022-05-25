@@ -1,19 +1,17 @@
-package guru.springframework.sfgrestbrewery.web.model;
-
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+package guru.springframework.sfgrestbrewery.model;
 
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * Created by jt on 2019-05-12.
- */
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
+
+
 public class BeerPagedList extends PageImpl<BeerDto> implements Serializable {
 
     static final long serialVersionUID = 1114715135625836949L;
@@ -40,4 +38,5 @@ public class BeerPagedList extends PageImpl<BeerDto> implements Serializable {
     public BeerPagedList(List<BeerDto> content) {
         super(content);
     }
+
 }
