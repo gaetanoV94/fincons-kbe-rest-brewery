@@ -15,19 +15,22 @@ import javax.persistence.Version;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.hateoas.RepresentationModel;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Builder
 @Entity
 @Table(name = "Beers")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Beer {
+public class Beer extends RepresentationModel<Beer>{
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

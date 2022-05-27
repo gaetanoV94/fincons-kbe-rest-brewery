@@ -5,6 +5,9 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,16 +36,45 @@ public class BeerController {
 	
 	@GetMapping(value = "beers")
 	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
-	public ResponseEntity<List<Beer>> getBeers(){
+	public CollectionModel<Beer> getBeers(){
 		log.info("Getting all beers from the Database");
 		final Iterable<Beer> beerIterable = beerService.getAllBeers();
 		final List<Beer> beers = StreamSupport
 				.stream(beerIterable.spliterator(), false)
 				.collect(Collectors.toList());
-		return new ResponseEntity<List<Beer>>(beers, HttpStatus.OK);
+		for(Beer beer : beers) {
+			Link beerLink = WebMvcLinkBuilder
+					.linkTo(WebMvcLinkBuilder
+							.methodOn(BeerController.class)
+							.getBeerById(beer.getId()))
+					.withRel("beer-id");
+			Link beerNameLink = WebMvcLinkBuilder
+					.linkTo(WebMvcLinkBuilder
+							.methodOn(BeerController.class)
+							.getBeersByBeerName(beer.getBeerName()))
+					.withRel("beer-name");
+			Link beerUpcLink = WebMvcLinkBuilder
+					.linkTo(WebMvcLinkBuilder
+							.methodOn(BeerController.class)
+							.getBeersFromUpc(beer.getUpc()))
+					.withRel("beer-upc");
+			Link deleteBeerLink = WebMvcLinkBuilder
+					.linkTo(WebMvcLinkBuilder
+							.methodOn(BeerController.class)
+							.deleteBeerById(beer.getId()))
+					.withRel("delete-beer");
+			beer.add(beerLink);
+			beer.add(beerNameLink);
+			beer.add(beerUpcLink);
+			beer.add(deleteBeerLink);
+		}
+		
+		Link link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(BeerController.class).getBeers()).withSelfRel();
+		
+		return CollectionModel.of(beers, link);
 	}
 	
-	@GetMapping(value = "get-beer-from-id/{id}")
+	@GetMapping(value = "get-beer-from-id")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Beer> getBeerById(@RequestParam(name = "id") final Integer beerId){
 		log.info("Getting beer with beerId {} from the Database.", beerId);
@@ -53,7 +85,7 @@ public class BeerController {
 		return new ResponseEntity<Beer>(beer, HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "get-beer-from-name/{beerName}")
+	@GetMapping(value = "get-beer-from-name")
 	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
 	public ResponseEntity<List<Beer>> getBeersByBeerName(@RequestParam(name = "beerName") String beerName){
 		log.info("Getting beer(s) for name {} from the Database", beerName);
@@ -61,7 +93,7 @@ public class BeerController {
 		return new ResponseEntity<List<Beer>>(beersByName, HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "get-beer-from-upc/{beerUpc}")
+	@GetMapping(value = "get-beer-from-upc")
 	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
 	public ResponseEntity<List<Beer>> getBeersFromUpc(@RequestParam(name = "beerUpc") String upc){
 		log.info("Getting beer(s) for upc {} from the Database", upc);
@@ -77,7 +109,7 @@ public class BeerController {
 		return new ResponseEntity<Void>(HttpStatus.CREATED);
 	}
 	
-	@DeleteMapping(value = "delete-beer/{beerId}")
+	@DeleteMapping(value = "delete-beer")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Void> deleteBeerById(@RequestParam(name = "beerId") Integer beerId){
 		log.info("Deleting beer with beerId {} from the Database", beerId);

@@ -15,15 +15,19 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
-@Data
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
 @Entity
 @Table(name = "users", 
 	uniqueConstraints = @UniqueConstraint(columnNames = "username"))
 @NoArgsConstructor
-public class User {
+public class User extends RepresentationModel<User>{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
