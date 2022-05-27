@@ -50,30 +50,12 @@ public class BeerController {
 							.methodOn(BeerController.class)
 							.getBeerById(beer.getId()))
 					.withRel("beer-id");
-			Link beerNameLink = WebMvcLinkBuilder
-					.linkTo(WebMvcLinkBuilder
-							.methodOn(BeerController.class)
-							.getBeersByBeerName(beer.getBeerName()))
-					.withRel("beer-name");
-			Link beerUpcLink = WebMvcLinkBuilder
-					.linkTo(WebMvcLinkBuilder
-							.methodOn(BeerController.class)
-							.getBeersFromUpc(beer.getUpc()))
-					.withRel("beer-upc");
-			Link beerStyleLink = WebMvcLinkBuilder
-					.linkTo(WebMvcLinkBuilder
-							.methodOn(BeerController.class)
-							.getBeersFromBeerStyle(beer.getBeerStyle()))
-					.withRel("beer-style");
 			Link deleteBeerLink = WebMvcLinkBuilder
 					.linkTo(WebMvcLinkBuilder
 							.methodOn(BeerController.class)
 							.deleteBeerById(beer.getId()))
 					.withRel("delete-beer");
 			beer.add(beerLink);
-			beer.add(beerNameLink);
-			beer.add(beerUpcLink);
-			beer.add(beerStyleLink);
 			beer.add(deleteBeerLink);
 		}
 		
@@ -93,30 +75,16 @@ public class BeerController {
 		return new ResponseEntity<Beer>(beer, HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "beers/beer-from-name")
-	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
-	public ResponseEntity<List<Beer>> getBeersByBeerName(@RequestParam(name = "beerName") String beerName){
-		log.info("Getting beer(s) for name {} from the Database", beerName);
-		final List<Beer> beersByName = beerService.findAllByBeerName(beerName);
-		return new ResponseEntity<List<Beer>>(beersByName, HttpStatus.OK);
-	}
-	
-	@GetMapping(value = "beers/beer-from-upc")
-	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
-	public ResponseEntity<List<Beer>> getBeersFromUpc(@RequestParam(name = "beerUpc") String upc){
-		log.info("Getting beer(s) for upc {} from the Database", upc);
-		final List<Beer> beerByUpc = beerService.findByUpc(upc);
-		return new ResponseEntity<List<Beer>>(beerByUpc, HttpStatus.OK);
-	}
-	
-	@GetMapping(value = "beers/beers-from-style")
+	@GetMapping(value = "beers/beers-from-query")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public CollectionModel<Beer> getBeersFromBeerStyle(@RequestParam(name = "beerStyle") BeerStyleEnum beerStyle){
-		final Iterable<Beer> beerIterable = beerService.getBeersFromBeerStyle(beerStyle);
-		final List<Beer> beers = StreamSupport
-				.stream(beerIterable.spliterator(), false)
-				.collect(Collectors.toList());
-		return CollectionModel.of(beers);
+	public ResponseEntity<List<Beer>> getBeersFromQueryParams(
+			@RequestParam(value = "beerName", required = false) String beerName,
+			@RequestParam(value = "upc", required = false) String upc,
+			@RequestParam(value = "beerStyle", required = false) BeerStyleEnum beerStyle){
+		log.info("Getting beer(s) with these values: {}, {}, {} "
+				+ "from the Database", beerName, upc, beerStyle);
+		final List<Beer> beersByParams = beerService.findBeersByParams(beerName, upc, beerStyle);
+		return new ResponseEntity<List<Beer>>(beersByParams, HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "beers/save-new-beer")
