@@ -11,11 +11,18 @@ import guru.springframework.sfgrestbrewery.model.User;
 public interface UserRepository extends JpaRepository<User, Integer>{
 	
 	@Query("select u from User u where u.username = :username")
-	User findByUsername(@Param("username")String username);
+	User getUserByUsername(@Param("username")String username);
 	
 	Boolean existsByUsername(String username);
 	
-	@Query(value = "SELECT u.id, u.password, u.username, r.id, r.name FROM users u inner join user_roles ur on u.id = ur.user_id inner join roles r on r.id = ur.role_id where r.name = :role", nativeQuery = true)
-	Iterable<User> findByRole(@Param("role") String role);
+	@Query(value = "SELECT u.id, u.password, u.username, r.id, r.name "
+			+ "FROM users u "
+			+ "INNER JOIN user_roles ur "
+			+ "ON u.id = ur.user_id "
+			+ "INNER JOIN roles r "
+			+ "ON r.id = ur.role_id "
+			+ "WHERE r.name = :role", 
+			nativeQuery = true)
+	Iterable<User> getUserByRole(@Param("role") String role);
 
 }

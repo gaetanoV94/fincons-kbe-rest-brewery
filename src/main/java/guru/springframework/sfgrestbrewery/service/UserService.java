@@ -25,7 +25,7 @@ public class UserService implements UserDetailsService{
 	@Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		User user = userRepository.findByUsername(username);
+		User user = userRepository.getUserByUsername(username);
 		
 		return UserDetailsImpl.build(user);
 	}
@@ -38,12 +38,12 @@ public class UserService implements UserDetailsService{
 		userRepository.deleteById(roleId);
 	}
 	
-	public Optional<User> findUserById(Integer userId) {
+	public Optional<User> getUserById(Integer userId) {
 		return userRepository.findById(userId);
 	}
 	
-	public Iterable<User> findUserByRole(ERole role){
-		return userRepository.findByRole(role.name());
+	public Iterable<User> getUserByRole(ERole role){
+		return userRepository.getUserByRole(role.name());
 	}
 
 }

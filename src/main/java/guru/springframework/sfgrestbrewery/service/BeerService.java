@@ -36,11 +36,11 @@ public class BeerService {
 		return beerRepository.findAllByBeerName(beerName);
 	}
 	
-	public List<Beer> findAllByBeerStyle(BeerStyleEnum beerStyle){
-		return beerRepository.findAllByBeerStyle(beerStyle);
+	public Iterable<Beer> getBeersFromBeerStyle(BeerStyleEnum beerStyle){
+		return beerRepository.findAllByBeerStyle(beerStyle.name());
 	}
 	
-	public List<Beer> findAllByBeerNameAndBeerStyle(String beerName, BeerStyleEnum beerStyle){
+	public List<Beer> getBeersFromBeerNameAndBeerStyle(String beerName, BeerStyleEnum beerStyle){
 		return beerRepository.findAllByBeerNameAndBeerStyle(beerName, beerStyle);
 	}
 

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import guru.springframework.sfgrestbrewery.exception.BeerNotFoundException;
 import guru.springframework.sfgrestbrewery.model.Beer;
+import guru.springframework.sfgrestbrewery.model.BeerStyleEnum;
 import guru.springframework.sfgrestbrewery.service.BeerService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -58,6 +59,11 @@ public class BeerController {
 							.methodOn(BeerController.class)
 							.getBeersFromUpc(beer.getUpc()))
 					.withRel("beer-upc");
+			Link beerStyleLink = WebMvcLinkBuilder
+					.linkTo(WebMvcLinkBuilder
+							.methodOn(BeerController.class)
+							.getBeersFromBeerStyle(beer.getBeerStyle()))
+					.withRel("beer-style");
 			Link deleteBeerLink = WebMvcLinkBuilder
 					.linkTo(WebMvcLinkBuilder
 							.methodOn(BeerController.class)
@@ -66,6 +72,7 @@ public class BeerController {
 			beer.add(beerLink);
 			beer.add(beerNameLink);
 			beer.add(beerUpcLink);
+			beer.add(beerStyleLink);
 			beer.add(deleteBeerLink);
 		}
 		
@@ -99,6 +106,16 @@ public class BeerController {
 		log.info("Getting beer(s) for upc {} from the Database", upc);
 		final List<Beer> beerByUpc = beerService.findByUpc(upc);
 		return new ResponseEntity<List<Beer>>(beerByUpc, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "get-beers-from-style")
+	@PreAuthorize("hasAuthority('ADMIN')")
+	public CollectionModel<Beer> getBeersFromBeerStyle(@RequestParam(name = "beerStyle") BeerStyleEnum beerStyle){
+		final Iterable<Beer> beerIterable = beerService.getBeersFromBeerStyle(beerStyle);
+		final List<Beer> beers = StreamSupport
+				.stream(beerIterable.spliterator(), false)
+				.collect(Collectors.toList());
+		return CollectionModel.of(beers);
 	}
 	
 	@PostMapping(value = "save-new-beer")

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -67,20 +68,20 @@ public class UserController {
 		return CollectionModel.of(users, link);
 	}
 	
-	@DeleteMapping(value = "delete-user")
+	@DeleteMapping(value = "user/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<Void> deleteUserById(@RequestParam(name = "userId") Integer userId){
+	public ResponseEntity<Void> deleteUserById(@PathVariable(name = "id") Integer userId){
 		log.info("Deleting user with userId {} from the Database", userId);
 		userService.deleteUserById(userId);
 		log.info("Record with userId {} has been deleted", userId);
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "get-user-from-id")
+	@GetMapping(value = "user/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<User> getUserById(@RequestParam(name = "id") final Integer userId){
+	public ResponseEntity<User> getUserById(@PathVariable(name = "id") final Integer userId){
 		log.info("Getting user with userId {} from the Database.", userId);
-		final User user = userService.findUserById(userId)
+		final User user = userService.getUserById(userId)
 				.orElseThrow(() -> new UserNotFoundException
 					("User with userId " + userId 
 							+ " not found in the Database"));
@@ -90,7 +91,7 @@ public class UserController {
 	@GetMapping(value = "get-user-from-role")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public CollectionModel<User> getUserFromRole(@RequestParam("role") ERole role){
-		final Iterable<User> userIterable = userService.findUserByRole(role);
+		final Iterable<User> userIterable = userService.getUserByRole(role);
 		final List<User> users = StreamSupport
 				.stream(userIterable.spliterator(), false)
 				.collect(Collectors.toList());
