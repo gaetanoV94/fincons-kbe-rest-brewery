@@ -68,7 +68,7 @@ public class UserController {
 		return CollectionModel.of(users, link);
 	}
 	
-	@DeleteMapping(value = "user/{id}")
+	@DeleteMapping(value = "/users/user/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Void> deleteUserById(@PathVariable(name = "id") Integer userId){
 		log.info("Deleting user with userId {} from the Database", userId);
@@ -77,7 +77,7 @@ public class UserController {
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "user/{id}")
+	@GetMapping(value = "/users/user/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<User> getUserById(@PathVariable(name = "id") final Integer userId){
 		log.info("Getting user with userId {} from the Database.", userId);
@@ -88,7 +88,7 @@ public class UserController {
 		return new ResponseEntity<User>(user, HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "get-user-from-role")
+	@GetMapping(value = "/users/user-from-role")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public CollectionModel<User> getUserFromRole(@RequestParam("role") ERole role){
 		final Iterable<User> userIterable = userService.getUserByRole(role);

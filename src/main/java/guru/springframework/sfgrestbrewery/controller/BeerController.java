@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -81,9 +82,9 @@ public class BeerController {
 		return CollectionModel.of(beers, link);
 	}
 	
-	@GetMapping(value = "get-beer-from-id")
+	@GetMapping(value = "beers/beerId/{beerId}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<Beer> getBeerById(@RequestParam(name = "id") final Integer beerId){
+	public ResponseEntity<Beer> getBeerById(@PathVariable(name = "beerId") final Integer beerId){
 		log.info("Getting beer with beerId {} from the Database.", beerId);
 		final Beer beer = beerService.getBeerById(beerId)
 				.orElseThrow(() -> new BeerNotFoundException
@@ -92,7 +93,7 @@ public class BeerController {
 		return new ResponseEntity<Beer>(beer, HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "get-beer-from-name")
+	@GetMapping(value = "beers/beer-from-name")
 	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
 	public ResponseEntity<List<Beer>> getBeersByBeerName(@RequestParam(name = "beerName") String beerName){
 		log.info("Getting beer(s) for name {} from the Database", beerName);
@@ -100,7 +101,7 @@ public class BeerController {
 		return new ResponseEntity<List<Beer>>(beersByName, HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "get-beer-from-upc")
+	@GetMapping(value = "beers/beer-from-upc")
 	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
 	public ResponseEntity<List<Beer>> getBeersFromUpc(@RequestParam(name = "beerUpc") String upc){
 		log.info("Getting beer(s) for upc {} from the Database", upc);
@@ -108,7 +109,7 @@ public class BeerController {
 		return new ResponseEntity<List<Beer>>(beerByUpc, HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "get-beers-from-style")
+	@GetMapping(value = "beers/beers-from-style")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public CollectionModel<Beer> getBeersFromBeerStyle(@RequestParam(name = "beerStyle") BeerStyleEnum beerStyle){
 		final Iterable<Beer> beerIterable = beerService.getBeersFromBeerStyle(beerStyle);
@@ -118,7 +119,7 @@ public class BeerController {
 		return CollectionModel.of(beers);
 	}
 	
-	@PostMapping(value = "save-new-beer")
+	@PostMapping(value = "beers/save-new-beer")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Void> saveNewBeer(@RequestBody Beer beer){
 		log.info("Saving new beer in the Database");
@@ -126,9 +127,9 @@ public class BeerController {
 		return new ResponseEntity<Void>(HttpStatus.CREATED);
 	}
 	
-	@DeleteMapping(value = "delete-beer")
+	@DeleteMapping(value = "beers/beerId/{beerId}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<Void> deleteBeerById(@RequestParam(name = "beerId") Integer beerId){
+	public ResponseEntity<Void> deleteBeerById(@PathVariable(name = "beerId") Integer beerId){
 		log.info("Deleting beer with beerId {} from the Database", beerId);
 		beerService.deleteBeerById(beerId);
 		log.info("Record with beerId {} has been deleted", beerId);
