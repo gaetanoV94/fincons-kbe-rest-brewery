@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import guru.springframework.sfgrestbrewery.dto.BeerDTO;
 import guru.springframework.sfgrestbrewery.exception.BeerNotFoundException;
 import guru.springframework.sfgrestbrewery.model.Beer;
 import guru.springframework.sfgrestbrewery.model.BeerStyleEnum;
@@ -72,7 +73,7 @@ public class BeerController {
 				.orElseThrow(() -> new BeerNotFoundException
 					("Beer with beerId " + beerId 
 							+ " not found in the Database"));
-		return new ResponseEntity<Beer>(beer, HttpStatus.OK);
+		return new ResponseEntity<>(beer, HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "beers/beers-from-query")
@@ -84,15 +85,15 @@ public class BeerController {
 		log.info("Getting beer(s) with these values: {}, {}, {} "
 				+ "from the Database", beerName, upc, beerStyle);
 		final List<Beer> beersByParams = beerService.findBeersByParams(beerName, upc, beerStyle);
-		return new ResponseEntity<List<Beer>>(beersByParams, HttpStatus.OK);
+		return new ResponseEntity<>(beersByParams, HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "beers/save-new-beer")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<Void> saveNewBeer(@RequestBody Beer beer){
+	public ResponseEntity<Void> saveNewBeer(@RequestBody BeerDTO beer){
 		log.info("Saving new beer in the Database");
 		beerService.save(beer);
-		return new ResponseEntity<Void>(HttpStatus.CREATED);
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
 	@DeleteMapping(value = "beers/beerId/{beerId}")
@@ -101,7 +102,7 @@ public class BeerController {
 		log.info("Deleting beer with beerId {} from the Database", beerId);
 		beerService.deleteBeerById(beerId);
 		log.info("Record with beerId {} has been deleted", beerId);
-		return new ResponseEntity<Void>(HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 }

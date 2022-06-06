@@ -1,7 +1,8 @@
 package guru.springframework.sfgrestbrewery.model;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.util.Date;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +17,8 @@ import javax.persistence.Version;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.hateoas.RepresentationModel;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -58,9 +61,40 @@ public class Beer extends RepresentationModel<Beer>{
 
     @CreationTimestamp
     @Column(name = "created_date", updatable = false)
-    private Timestamp createdDate;
+    @JsonFormat
+    (shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
+    private Date createdDate;
 
     @UpdateTimestamp
-    private Timestamp lastModifiedDate;
+    @JsonFormat
+    (shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
+    private Date lastModifiedDate;
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(beerName, beerStyle, createdDate, id, lastModifiedDate, price,
+				quantityOnHand, upc, version);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Beer other = (Beer) obj;
+		return Objects.equals(beerName, other.beerName) && beerStyle == other.beerStyle
+				&& Objects.equals(createdDate, other.createdDate) && Objects.equals(id, other.id)
+				&& Objects.equals(lastModifiedDate, other.lastModifiedDate) && Objects.equals(price, other.price)
+				&& Objects.equals(quantityOnHand, other.quantityOnHand) && Objects.equals(upc, other.upc)
+				&& Objects.equals(version, other.version);
+	}
+    
+    
 
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import guru.springframework.sfgrestbrewery.dto.BeerDTO;
 import guru.springframework.sfgrestbrewery.model.Beer;
 import guru.springframework.sfgrestbrewery.model.BeerStyleEnum;
 import guru.springframework.sfgrestbrewery.repository.BeerRepository;
@@ -20,7 +21,16 @@ public class BeerService {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
-	public void save(final Beer beer) {
+	public void save(BeerDTO beerDto) {
+		
+		Beer beer = new Beer();
+		beer.setVersion(beerDto.getVersion());
+		beer.setBeerName(beerDto.getBeerName());
+		beer.setBeerStyle(beerDto.getBeerStyle());
+		beer.setUpc(beerDto.getUpc());
+		beer.setQuantityOnHand(beerDto.getQuantityOnHand());
+		beer.setPrice(beerDto.getPrice());
+		
 		beerRepository.save(beer);
 	}
 	
@@ -35,10 +45,6 @@ public class BeerService {
 	public Optional<Beer> getBeerById(final Integer beerId){
 		return beerRepository.findById(beerId);
 	}
-	
-//	public List<Beer> getBeersFromBeerNameAndBeerStyle(String beerName, BeerStyleEnum beerStyle){
-//		return beerRepository.findAllByBeerNameAndBeerStyle(beerName, beerStyle);
-//	}
     
     public void deleteBeerById(Integer beerId) {
     	beerRepository.deleteById(beerId);
@@ -60,12 +66,12 @@ public class BeerService {
 		
 		return jdbcTemplate.query(sql, 
 				(rs, rowNum) -> new Beer(
-						(Integer)rs.getInt("id"),
-						(Long)rs.getLong("version"),
+						rs.getInt("id"),
+						rs.getLong("version"),
 						rs.getString("beer_name"),
 						BeerStyleEnum.valueOf(rs.getString("beer_style")),
 						rs.getString("upc"),
-						(Integer)rs.getInt("quantity_on_hand"),
+						rs.getInt("quantity_on_hand"),
 						rs.getBigDecimal("price"),
 						rs.getTimestamp("created_date"),
 						rs.getTimestamp("last_modified_date")

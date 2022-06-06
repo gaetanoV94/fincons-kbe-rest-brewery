@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,7 +52,7 @@ public class AuthController {
 	JwtUtils jwtUtils;
 
 	@PostMapping("/signin")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+	public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -61,7 +62,7 @@ public class AuthController {
 
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();    
 		List<String> roles = userDetails.getAuthorities().stream()
-				.map(item -> item.getAuthority())
+				.map(GrantedAuthority::getAuthority)
 				.collect(Collectors.toList());
 
 		return ResponseEntity.ok(new JwtResponse(jwt, 
@@ -71,8 +72,8 @@ public class AuthController {
 	}
 	
 	@PostMapping("/signup")
-	  public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-	    if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+	  public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+	    if (Boolean.TRUE.equals(userRepository.existsByUsername(signUpRequest.getUsername()))) {
 	      return ResponseEntity
 	          .badRequest()
 	          .body(new MessageResponse("Error: Username is already taken!"));
@@ -83,23 +84,21 @@ public class AuthController {
 	               encoder.encode(signUpRequest.getPassword()));
 
 	    Set<String> strRoles = signUpRequest.getRole();
-	    List<Role> roles = new ArrayList<Role>();
+	    List<Role> roles = new ArrayList<>();
 
 	    if (strRoles == null) {
 	      Role userRole = roleRepository.findByName(ERole.USER);
 	      roles.add(userRole);
 	    } else {
 	      strRoles.forEach(role -> {
-	        switch (role) {
-	        case "admin":
-	          Role adminRole = roleRepository.findByName(ERole.ADMIN);
-	          roles.add(adminRole);
-
-	          break;
-	        default:
-	          Role userRole = roleRepository.findByName(ERole.USER);
-	          roles.add(userRole);
-	        }
+	    	if(role.equals("admin")) {
+	    		Role adminRole = roleRepository.findByName(ERole.ADMIN);
+		          roles.add(adminRole);
+	    	}
+	    	else if(role.equals("user")) {
+	    		Role userRole = roleRepository.findByName(ERole.USER);
+		          roles.add(userRole);
+	    	}
 	      });
 	    }
 

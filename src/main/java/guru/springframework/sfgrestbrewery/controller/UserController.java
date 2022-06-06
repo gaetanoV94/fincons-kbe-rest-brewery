@@ -74,7 +74,7 @@ public class UserController {
 		log.info("Deleting user with userId {} from the Database", userId);
 		userService.deleteUserById(userId);
 		log.info("Record with userId {} has been deleted", userId);
-		return new ResponseEntity<Void>(HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/users/user/{id}")
@@ -85,7 +85,7 @@ public class UserController {
 				.orElseThrow(() -> new UserNotFoundException
 					("User with userId " + userId 
 							+ " not found in the Database"));
-		return new ResponseEntity<User>(user, HttpStatus.OK);
+		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 	
 	@GetMapping(value = "/users/user-from-role")
