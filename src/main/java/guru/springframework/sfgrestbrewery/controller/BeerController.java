@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import guru.springframework.sfgrestbrewery.dto.BeerDTO;
+import guru.springframework.sfgrestbrewery.dto.BeerRecord;
 import guru.springframework.sfgrestbrewery.exception.BeerNotFoundException;
 import guru.springframework.sfgrestbrewery.model.Beer;
 import guru.springframework.sfgrestbrewery.model.BeerStyleEnum;
@@ -78,19 +78,19 @@ public class BeerController {
 	
 	@GetMapping(value = "beers/beers-from-query")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<List<Beer>> getBeersFromQueryParams(
+	public ResponseEntity<List<BeerRecord>> getBeersFromQueryParams(
 			@RequestParam(value = "beerName", required = false) String beerName,
 			@RequestParam(value = "upc", required = false) String upc,
 			@RequestParam(value = "beerStyle", required = false) BeerStyleEnum beerStyle){
 		log.info("Getting beer(s) with these values: {}, {}, {} "
 				+ "from the Database", beerName, upc, beerStyle);
-		final List<Beer> beersByParams = beerService.findBeersByParams(beerName, upc, beerStyle);
+		final List<BeerRecord> beersByParams = beerService.findBeersByParams(beerName, upc, beerStyle);
 		return new ResponseEntity<>(beersByParams, HttpStatus.OK);
 	}
 	
 	@PostMapping(value = "beers/save-new-beer")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<Void> saveNewBeer(@RequestBody BeerDTO beer){
+	public ResponseEntity<Void> saveNewBeer(@RequestBody BeerRecord beer){
 		log.info("Saving new beer in the Database");
 		beerService.save(beer);
 		return new ResponseEntity<>(HttpStatus.CREATED);

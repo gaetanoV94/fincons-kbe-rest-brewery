@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import guru.springframework.sfgrestbrewery.dto.BeerDTO;
+import guru.springframework.sfgrestbrewery.dto.BeerRecord;
 import guru.springframework.sfgrestbrewery.model.Beer;
 import guru.springframework.sfgrestbrewery.model.BeerStyleEnum;
 import guru.springframework.sfgrestbrewery.repository.BeerRepository;
@@ -21,15 +21,15 @@ public class BeerService {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
-	public void save(BeerDTO beerDto) {
+	public void save(BeerRecord beerRecord) {
 		
 		Beer beer = new Beer();
-		beer.setVersion(beerDto.getVersion());
-		beer.setBeerName(beerDto.getBeerName());
-		beer.setBeerStyle(beerDto.getBeerStyle());
-		beer.setUpc(beerDto.getUpc());
-		beer.setQuantityOnHand(beerDto.getQuantityOnHand());
-		beer.setPrice(beerDto.getPrice());
+		beer.setVersion(beerRecord.version());
+		beer.setBeerName(beerRecord.beerName());
+		beer.setBeerStyle(beerRecord.beerStyle());
+		beer.setUpc(beerRecord.upc());
+		beer.setQuantityOnHand(beerRecord.quantityOnHand());
+		beer.setPrice(beerRecord.price());
 		
 		beerRepository.save(beer);
 	}
@@ -50,7 +50,7 @@ public class BeerService {
     	beerRepository.deleteById(beerId);
     }
 
-	public List<Beer> findBeersByParams(String beerName, String upc, BeerStyleEnum beerStyle) {
+	public List<BeerRecord> findBeersByParams(String beerName, String upc, BeerStyleEnum beerStyle) {
 		
 		String sql = "SELECT * FROM beers WHERE ";
 		
@@ -65,7 +65,7 @@ public class BeerService {
 		}
 		
 		return jdbcTemplate.query(sql, 
-				(rs, rowNum) -> new Beer(
+				(rs, rowNum) -> new BeerRecord(
 						rs.getInt("id"),
 						rs.getLong("version"),
 						rs.getString("beer_name"),
@@ -73,9 +73,8 @@ public class BeerService {
 						rs.getString("upc"),
 						rs.getInt("quantity_on_hand"),
 						rs.getBigDecimal("price"),
-						rs.getTimestamp("created_date"),
-						rs.getTimestamp("last_modified_date")
-						
+						rs.getDate("created_date"),
+						rs.getDate("last_modified_date")
 				));
 	}
 
