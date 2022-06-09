@@ -1,7 +1,6 @@
 package guru.springframework.sfgrestbrewery.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,7 @@ public class UserController {
 		final Iterable<User> userIterable = userService.getAllUsers();
 		final List<User> users = StreamSupport
 				.stream(userIterable.spliterator(), false)
-				.collect(Collectors.toList());
+				.toList();
 		
 		for(User user:  users) {
 			Link userIdLink = WebMvcLinkBuilder
@@ -90,11 +89,8 @@ public class UserController {
 	
 	@GetMapping(value = "/users/user-from-role")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public CollectionModel<User> getUserFromRole(@RequestParam("role") ERole role){
-		final Iterable<User> userIterable = userService.getUserByRole(role);
-		final List<User> users = StreamSupport
-				.stream(userIterable.spliterator(), false)
-				.collect(Collectors.toList());
-		return CollectionModel.of(users);
+	public ResponseEntity<List<User>> getUserFromRole(@RequestParam("role") ERole role){
+		final List<User> users = userService.getUserByRole(role);
+		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 }

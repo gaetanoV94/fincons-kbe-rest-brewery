@@ -60,10 +60,10 @@ public class BeerLoader implements CommandLineRunner{
     
     private synchronized void loadBeerObjects() {
         log.debug("Loading initial data. Count is: {}", beerRepository.count() );
-
-        Random random = new Random();
         
         if (beerRepository.count() == 0) {
+        	
+        	Random random = new Random();
 
             beerRepository.save(Beer.builder()
                     .beerName("Mango Bobs")

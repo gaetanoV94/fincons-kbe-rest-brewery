@@ -1,5 +1,6 @@
 package guru.springframework.sfgrestbrewery.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -42,7 +43,7 @@ public class UserService implements UserDetailsService{
 		return userRepository.findById(userId);
 	}
 	
-	public Iterable<User> getUserByRole(ERole role){
+	public List<User> getUserByRole(ERole role){
 		return userRepository.getUserByRole(role.name());
 	}
 

@@ -1,7 +1,6 @@
 package guru.springframework.sfgrestbrewery.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,7 @@ public class BeerController {
 		final Iterable<Beer> beerIterable = beerService.getAllBeers();
 		final List<Beer> beers = StreamSupport
 				.stream(beerIterable.spliterator(), false)
-				.collect(Collectors.toList());
+				.toList();
 		for(Beer beer : beers) {
 			Link beerLink = WebMvcLinkBuilder
 					.linkTo(WebMvcLinkBuilder

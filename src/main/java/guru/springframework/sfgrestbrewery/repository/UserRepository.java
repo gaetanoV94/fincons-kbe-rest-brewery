@@ -1,5 +1,7 @@
 package guru.springframework.sfgrestbrewery.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,14 +17,14 @@ public interface UserRepository extends JpaRepository<User, Integer>{
 	
 	Boolean existsByUsername(String username);
 	
-	@Query(value = "SELECT u.id, u.password, u.username, r.id, r.name "
+	@Query(value = "SELECT u.user_id, u.password, u.username, r.role_id, r.name "
 			+ "FROM users u "
 			+ "INNER JOIN user_roles ur "
-			+ "ON u.id = ur.user_id "
+			+ "ON u.user_id = ur.user_id "
 			+ "INNER JOIN roles r "
-			+ "ON r.id = ur.role_id "
+			+ "ON r.role_id = ur.role_id "
 			+ "WHERE r.name = :role", 
 			nativeQuery = true)
-	Iterable<User> getUserByRole(@Param("role") String role);
+	List<User> getUserByRole(@Param("role") String role);
 
 }

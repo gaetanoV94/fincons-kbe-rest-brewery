@@ -1,5 +1,6 @@
 package guru.springframework.sfgrestbrewery.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -23,6 +24,7 @@ public class Role {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "role_id")
 	private Integer id;
 	
 	@Enumerated(EnumType.STRING)

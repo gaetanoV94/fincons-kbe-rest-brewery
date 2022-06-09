@@ -22,5 +22,7 @@ public class SwaggerConstants {
 	public static final String LICENCE_URL = "https://www.apache.org/licences/LICENCE-2.0";
 	public static final String SECURE_PATH = "/*/.*";
 	public static final String API_TAG = "Beer Service";
+	
+	
 
 }

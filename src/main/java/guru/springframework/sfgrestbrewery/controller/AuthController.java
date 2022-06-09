@@ -3,7 +3,6 @@ package guru.springframework.sfgrestbrewery.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -63,7 +62,7 @@ public class AuthController {
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();    
 		List<String> roles = userDetails.getAuthorities().stream()
 				.map(GrantedAuthority::getAuthority)
-				.collect(Collectors.toList());
+				.toList();
 
 		return ResponseEntity.ok(new JwtResponse(jwt, 
                 userDetails.getId(), 

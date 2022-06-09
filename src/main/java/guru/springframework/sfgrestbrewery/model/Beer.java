@@ -37,6 +37,7 @@ public class Beer extends RepresentationModel<Beer>{
 	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "beer_id")
     private Integer id;
 
     @Version

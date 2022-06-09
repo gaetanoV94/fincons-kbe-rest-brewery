@@ -32,6 +32,7 @@ public class User extends RepresentationModel<User>{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "user_id")
 	private Integer id;
 	
 	@Column(name = "username")
