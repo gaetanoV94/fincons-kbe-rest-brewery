@@ -66,7 +66,7 @@ public class BeerService {
 		
 		return jdbcTemplate.query(sql, 
 				(rs, rowNum) -> new BeerRecord(
-						rs.getInt("id"),
+						rs.getInt("beer_id"),
 						rs.getLong("version"),
 						rs.getString("beer_name"),
 						BeerStyleEnum.valueOf(rs.getString("beer_style")),
