@@ -5,7 +5,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import guru.springframework.sfgrestbrewery.model.BeerStyleEnum;
+import guru.springframework.sfgrestbrewery.enums.BeerStyleEnum;
 
 public record BeerRecord(
 		Integer id, 

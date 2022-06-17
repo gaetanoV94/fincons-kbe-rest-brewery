@@ -8,7 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import guru.springframework.sfgrestbrewery.model.Beer;
-import guru.springframework.sfgrestbrewery.model.BeerStyleEnum;
+import guru.springframework.sfgrestbrewery.enums.BeerStyleEnum;
 import guru.springframework.sfgrestbrewery.repository.BeerRepository;
 import lombok.extern.slf4j.Slf4j;
 

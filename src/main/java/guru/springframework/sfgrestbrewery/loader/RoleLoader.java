@@ -3,7 +3,7 @@ package guru.springframework.sfgrestbrewery.loader;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import guru.springframework.sfgrestbrewery.model.ERole;
+import guru.springframework.sfgrestbrewery.enums.ERole;
 import guru.springframework.sfgrestbrewery.model.Role;
 import guru.springframework.sfgrestbrewery.repository.RoleRepository;
 

@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import guru.springframework.sfgrestbrewery.model.ERole;
+import guru.springframework.sfgrestbrewery.enums.ERole;
 import guru.springframework.sfgrestbrewery.model.Role;
 
 @Repository

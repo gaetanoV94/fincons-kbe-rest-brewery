@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import guru.springframework.sfgrestbrewery.exception.UserNotFoundException;
-import guru.springframework.sfgrestbrewery.model.ERole;
+import guru.springframework.sfgrestbrewery.enums.ERole;
 import guru.springframework.sfgrestbrewery.model.User;
 import guru.springframework.sfgrestbrewery.service.UserService;
 import lombok.extern.slf4j.Slf4j;

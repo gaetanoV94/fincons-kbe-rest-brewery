@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import guru.springframework.sfgrestbrewery.model.ERole;
+import guru.springframework.sfgrestbrewery.enums.ERole;
 import guru.springframework.sfgrestbrewery.model.User;
 import guru.springframework.sfgrestbrewery.repository.UserRepository;
 import guru.springframework.sfgrestbrewery.security.services.UserDetailsImpl;

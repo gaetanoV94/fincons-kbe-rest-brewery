@@ -29,7 +29,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 
 import guru.springframework.sfgrestbrewery.dto.BeerRecord;
-import guru.springframework.sfgrestbrewery.model.BeerStyleEnum;
+import guru.springframework.sfgrestbrewery.enums.BeerStyleEnum;
 import guru.springframework.sfgrestbrewery.payload.request.LoginRequest;
 
 @SpringBootTest

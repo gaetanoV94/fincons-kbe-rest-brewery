@@ -1,5 +1,6 @@
 package guru.springframework.sfgrestbrewery.controller;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import guru.springframework.sfgrestbrewery.dto.BeerRecord;
 import guru.springframework.sfgrestbrewery.exception.BeerNotFoundException;
 import guru.springframework.sfgrestbrewery.model.Beer;
-import guru.springframework.sfgrestbrewery.model.BeerStyleEnum;
+import guru.springframework.sfgrestbrewery.enums.BeerStyleEnum;
 import guru.springframework.sfgrestbrewery.service.BeerService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -89,9 +91,10 @@ public class BeerController {
 	
 	@PostMapping(value = "beers/save-new-beer")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<Void> saveNewBeer(@RequestBody BeerRecord beer){
+	public ResponseEntity<Void> saveNewBeer(@RequestBody BeerRecord beerRecord){
 		log.info("Saving new beer in the Database");
-		beerService.save(beer);
+		Beer beer = beerService.save(beerRecord);
+		Integer beerId = beer.getId();
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
@@ -99,9 +102,48 @@ public class BeerController {
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Void> deleteBeerById(@PathVariable(name = "beerId") Integer beerId){
 		log.info("Deleting beer with beerId {} from the Database", beerId);
-		beerService.deleteBeerById(beerId);
+		Beer beer = beerService.getBeerById(beerId)
+				.orElseThrow(() -> new BeerNotFoundException
+						("Beer with beerId " + beerId 
+								+ " not found in the Database"));
+		beerService.deleteBeerById(beerId, beer);
 		log.info("Record with beerId {} has been deleted", beerId);
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@PutMapping(value = "beers/update-beer")
+	@PreAuthorize("hasAuthority('ADMIN')")
+	public ResponseEntity<Void> updateBeer(
+			@RequestParam(value = "beerName") String beerName, 
+			@RequestBody BeerRecord beerRecord){
+		
+		List<BeerRecord> beerByParam = beerService
+				.findBeersByParams(beerName, null, null);
+		log.info("Beer found: " + beerByParam);
+		for (Beer beer : beerService.getAllBeers()) {
+			log.info("Hashcode for beer number {}: {}", 
+					beer.getId(), beer.hashCode());
+			LinkedHashMap<Integer, Integer> mapBeforeUpdate 
+				= new LinkedHashMap<>();
+			mapBeforeUpdate.put(beer.getId(), 
+					Integer.valueOf(beer.hashCode()));
+		}
+		log.info("Updating beer with beerId {} in the Database", 
+				beerByParam.get(0).id());
+		
+		beerService.updateBeer(beerByParam, beerRecord);
+		
+		for (Beer beer : beerService.getAllBeers()) {
+			log.info("Hashcode for beer number {}: {}", 
+					beer.getId(), beer.hashCode());
+			LinkedHashMap<Integer, Integer> mapAfterUpdate 
+				= new LinkedHashMap<>();
+			mapAfterUpdate.put(beer.getId(), 
+					Integer.valueOf(beer.hashCode()));
+		}
+		
+		return new ResponseEntity<>(HttpStatus.OK);
+		
 	}
 
 }

@@ -20,6 +20,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import guru.springframework.sfgrestbrewery.enums.BeerStyleEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -95,6 +96,15 @@ public class Beer extends RepresentationModel<Beer>{
 				&& Objects.equals(quantityOnHand, other.quantityOnHand) && Objects.equals(upc, other.upc)
 				&& Objects.equals(version, other.version);
 	}
+
+	@Override
+	public String toString() {
+		return "Beer [id=" + id + ", version=" + version + ", beerName=" + beerName + ", beerStyle=" + beerStyle
+				+ ", upc=" + upc + ", quantityOnHand=" + quantityOnHand + ", price=" + price + ", createdDate="
+				+ createdDate + ", lastModifiedDate=" + lastModifiedDate + "]";
+	}
+	
+	
     
     
 
