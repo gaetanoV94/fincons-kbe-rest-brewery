@@ -1,7 +1,7 @@
 package guru.springframework.sfgrestbrewery.controller;
 
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +23,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import guru.springframework.sfgrestbrewery.dto.BeerRecord;
-import guru.springframework.sfgrestbrewery.exception.BeerNotFoundException;
-import guru.springframework.sfgrestbrewery.model.Beer;
 import guru.springframework.sfgrestbrewery.enums.BeerStyleEnum;
+import guru.springframework.sfgrestbrewery.exception.BeerNotFoundException;
+import guru.springframework.sfgrestbrewery.loader.BeerLoader;
+import guru.springframework.sfgrestbrewery.model.Beer;
 import guru.springframework.sfgrestbrewery.service.BeerService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,6 +38,9 @@ public class BeerController {
 	
 	@Autowired
 	private BeerService beerService;
+	
+	@Autowired
+	private BeerLoader loader;
 	
 	@GetMapping(value = "beers")
 	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
@@ -114,33 +118,17 @@ public class BeerController {
 	@PutMapping(value = "beers/update-beer")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<Void> updateBeer(
-			@RequestParam(value = "beerName") String beerName, 
 			@RequestBody BeerRecord beerRecord){
+
+		Map<String, Integer> beerMap = loader.getBeerMap();
+		log.info("Before update: " + beerMap);
 		
-		List<BeerRecord> beerByParam = beerService
-				.findBeersByParams(beerName, null, null);
-		log.info("Beer found: " + beerByParam);
-		for (Beer beer : beerService.getAllBeers()) {
-			log.info("Hashcode for beer number {}: {}", 
-					beer.getId(), beer.hashCode());
-			LinkedHashMap<Integer, Integer> mapBeforeUpdate 
-				= new LinkedHashMap<>();
-			mapBeforeUpdate.put(beer.getId(), 
-					Integer.valueOf(beer.hashCode()));
-		}
-		log.info("Updating beer with beerId {} in the Database", 
-				beerByParam.get(0).id());
+		log.info("Updating beer with upc {} in the Database", 
+				beerRecord.upc());
 		
-		beerService.updateBeer(beerByParam, beerRecord);
+		beerService.updateBeer(beerRecord, beerMap);
 		
-		for (Beer beer : beerService.getAllBeers()) {
-			log.info("Hashcode for beer number {}: {}", 
-					beer.getId(), beer.hashCode());
-			LinkedHashMap<Integer, Integer> mapAfterUpdate 
-				= new LinkedHashMap<>();
-			mapAfterUpdate.put(beer.getId(), 
-					Integer.valueOf(beer.hashCode()));
-		}
+		log.info("After update: " + beerMap);
 		
 		return new ResponseEntity<>(HttpStatus.OK);
 		

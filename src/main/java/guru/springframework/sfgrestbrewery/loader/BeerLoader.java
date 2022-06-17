@@ -2,6 +2,8 @@ package guru.springframework.sfgrestbrewery.loader;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Random;
 
 import org.springframework.boot.CommandLineRunner;
@@ -48,9 +50,11 @@ public class BeerLoader implements CommandLineRunner{
     public static final String BEER_30_UPC = "8670687641074";
     
     private BeerRepository beerRepository;
+    private LinkedHashMap<String, Integer> beerMap = new LinkedHashMap<>();
     
-    public BeerLoader(BeerRepository repo) {
+    public BeerLoader(BeerRepository repo, Map<String, Integer> map) {
     	this.beerRepository = repo;
+    	this.beerMap = (LinkedHashMap<String, Integer>) map;
     }
 
     @Override
@@ -61,252 +65,346 @@ public class BeerLoader implements CommandLineRunner{
     private synchronized void loadBeerObjects() {
         log.debug("Loading initial data. Count is: {}", beerRepository.count() );
         
+        Random random = new Random();
+        
         if (beerRepository.count() == 0) {
-        	
-        	Random random = new Random();
 
-            beerRepository.save(Beer.builder()
+            Beer beer1 = Beer.builder()
                     .beerName("Mango Bobs")
                     .beerStyle(BeerStyleEnum.ALE)
                     .upc(BEER_1_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer1);
+            
+            beerMap.put(BEER_1_UPC, beer1.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer2 = Beer.builder()
                     .beerName("Galaxy Cat")
                     .beerStyle(BeerStyleEnum.PALE_ALE)
                     .upc(BEER_2_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer2);
+            
+            beerMap.put(BEER_2_UPC, beer2.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer3 = Beer.builder()
                     .beerName("No Hammers On The Bar")
                     .beerStyle(BeerStyleEnum.WHEAT)
                     .upc(BEER_3_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer3);
+            
+            beerMap.put(BEER_3_UPC, beer3.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer4 = Beer.builder()
                     .beerName("Blessed")
                     .beerStyle(BeerStyleEnum.STOUT)
                     .upc(BEER_4_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer4);
+            
+            beerMap.put(BEER_4_UPC, beer4.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer5 = Beer.builder()
                     .beerName("Adjunct Trail")
                     .beerStyle(BeerStyleEnum.STOUT)
                     .upc(BEER_5_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer5);
+            
+            beerMap.put(BEER_5_UPC, beer5.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer6 = Beer.builder()
                     .beerName("Very GGGreenn")
                     .beerStyle(BeerStyleEnum.IPA)
                     .upc(BEER_6_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer6);
+            
+            beerMap.put(BEER_6_UPC, beer6.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer7 = Beer.builder()
                     .beerName("Double Barrel Hunahpu's")
                     .beerStyle(BeerStyleEnum.STOUT)
                     .upc(BEER_7_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer7);
+            
+            beerMap.put(BEER_7_UPC, beer7.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer8 = Beer.builder()
                     .beerName("Very Hazy")
                     .beerStyle(BeerStyleEnum.IPA)
                     .upc(BEER_8_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer8);
+            
+            beerMap.put(BEER_8_UPC, beer8.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer9 = Beer.builder()
                     .beerName("SR-71")
                     .beerStyle(BeerStyleEnum.STOUT)
                     .upc(BEER_9_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer9);
+            
+            beerMap.put(BEER_9_UPC, beer9.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer10 = Beer.builder()
                     .beerName("Pliny the Younger")
                     .beerStyle(BeerStyleEnum.IPA)
                     .upc(BEER_10_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer10);
+            
+            beerMap.put(BEER_10_UPC, beer10.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer11 = Beer.builder()
                     .beerName("Blessed")
                     .beerStyle(BeerStyleEnum.STOUT)
                     .upc(BEER_11_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer11);
+            
+            beerMap.put(BEER_11_UPC, beer11.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer12 = Beer.builder()
                     .beerName("King Krush")
                     .beerStyle(BeerStyleEnum.IPA)
                     .upc(BEER_12_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer12);
+            
+            beerMap.put(BEER_12_UPC, beer12.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer13 = Beer.builder()
                     .beerName("PBS Porter")
                     .beerStyle(BeerStyleEnum.PORTER)
                     .upc(BEER_13_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer13);
+            
+            beerMap.put(BEER_13_UPC, beer13.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer14 = Beer.builder()
                     .beerName("Pinball Porter")
                     .beerStyle(BeerStyleEnum.STOUT)
                     .upc(BEER_14_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer14);
+            
+            beerMap.put(BEER_14_UPC, beer14.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer15 = Beer.builder()
                     .beerName("Golden Budda")
                     .beerStyle(BeerStyleEnum.STOUT)
                     .upc(BEER_15_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer15);
+            
+            beerMap.put(BEER_15_UPC, beer15.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer16 = Beer.builder()
                     .beerName("Grand Central Red")
                     .beerStyle(BeerStyleEnum.LAGER)
                     .upc(BEER_16_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer16);
+            
+            beerMap.put(BEER_16_UPC, beer16.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer17 = Beer.builder()
                     .beerName("Pac-Man")
                     .beerStyle(BeerStyleEnum.STOUT)
                     .upc(BEER_17_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer17);
+            
+            beerMap.put(BEER_17_UPC, beer17.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer18 = Beer.builder()
                     .beerName("Ro Sham Bo")
                     .beerStyle(BeerStyleEnum.IPA)
                     .upc(BEER_18_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer18);
+            
+            beerMap.put(BEER_18_UPC, beer18.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer19 = Beer.builder()
                     .beerName("Summer Wheatly")
                     .beerStyle(BeerStyleEnum.WHEAT)
                     .upc(BEER_19_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer19);
+            
+            beerMap.put(BEER_19_UPC, beer19.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer20 = Beer.builder()
                     .beerName("Java Jill")
                     .beerStyle(BeerStyleEnum.LAGER)
                     .upc(BEER_20_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer20);
+            
+            beerMap.put(BEER_20_UPC, beer20.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer21 = Beer.builder()
                     .beerName("Bike Trail Pale")
                     .beerStyle(BeerStyleEnum.PALE_ALE)
                     .upc(BEER_21_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer21);
+            
+            beerMap.put(BEER_21_UPC, beer21.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer22 = Beer.builder()
                     .beerName("N.Z.P")
                     .beerStyle(BeerStyleEnum.IPA)
                     .upc(BEER_22_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer22);
+            
+            beerMap.put(BEER_22_UPC, beer22.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer23 = Beer.builder()
                     .beerName("Stawberry Blond")
                     .beerStyle(BeerStyleEnum.WHEAT)
                     .upc(BEER_23_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer23);
+            
+            beerMap.put(BEER_23_UPC, beer23.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer24 = Beer.builder()
                     .beerName("Loco")
                     .beerStyle(BeerStyleEnum.PORTER)
                     .upc(BEER_24_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer24);
+            
+            beerMap.put(BEER_24_UPC, beer24.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer25 = Beer.builder()
                     .beerName("Spocktoberfest")
                     .beerStyle(BeerStyleEnum.STOUT)
                     .upc(BEER_25_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer25);
+            
+            beerMap.put(BEER_25_UPC, beer25.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer26 = Beer.builder()
                     .beerName("Beach Blond Ale")
                     .beerStyle(BeerStyleEnum.ALE)
                     .upc(BEER_26_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer26);
+            
+            beerMap.put(BEER_26_UPC, beer26.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer27 = Beer.builder()
                     .beerName("Bimini Twist IPA")
                     .beerStyle(BeerStyleEnum.IPA)
                     .upc(BEER_27_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer27);
+            
+            beerMap.put(BEER_27_UPC, beer27.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer28 = Beer.builder()
                     .beerName("Rod Bender Red Ale")
                     .beerStyle(BeerStyleEnum.ALE)
                     .upc(BEER_28_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer28);
+            
+            beerMap.put(BEER_28_UPC, beer28.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer29 = Beer.builder()
                     .beerName("Floating Dock")
                     .beerStyle(BeerStyleEnum.SAISON)
                     .upc(BEER_29_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer29);
+            
+            beerMap.put(BEER_29_UPC, beer29.hashCode());
 
-            beerRepository.save(Beer.builder()
+            Beer beer30 = Beer.builder()
                     .beerName("El Hefe")
                     .beerStyle(BeerStyleEnum.WHEAT)
                     .upc(BEER_30_UPC)
                     .price(new BigDecimal(BigInteger.valueOf(random.nextInt(10000)), 2))
                     .quantityOnHand(random.nextInt(5000))
-                    .build());
+                    .build();
+			beerRepository.save(beer30);
+            
+            beerMap.put(BEER_30_UPC, beer30.hashCode());
 
             log.debug("Beer Records loaded: {}", beerRepository.count());
         }
+    }
+    
+    public Map<String, Integer> getBeerMap(){
+    	return beerMap;
     }
 
 }

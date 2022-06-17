@@ -1,6 +1,7 @@
 package guru.springframework.sfgrestbrewery.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import guru.springframework.sfgrestbrewery.dto.BeerRecord;
 import guru.springframework.sfgrestbrewery.enums.BeerStyleEnum;
+import guru.springframework.sfgrestbrewery.loader.BeerLoader;
 import guru.springframework.sfgrestbrewery.model.Beer;
 import guru.springframework.sfgrestbrewery.repository.BeerRepository;
 
@@ -71,14 +73,20 @@ public class BeerService {
 		
 		String sql = "SELECT * FROM beers WHERE ";
 		
-		if(beerName != null) {
+		if(beerName != null && upc != null && beerStyle != null) {
+			sql += "beer_name LIKE '%" + beerName +"%'";
+			sql += "AND upc = " + "'" + upc + "'";
+			sql += "AND beer_style = " + "'" + beerStyle.name() + "'" + ";";
+			
+		}
+		if(beerName != null && upc == null && beerStyle == null) {
 			sql += "beer_name LIKE '%" + beerName +"%'";
 		}
-		if(upc != null) {
-			sql += "AND upc = " + "'" + upc + "'";
+		if(upc != null && beerName == null && beerStyle == null) {
+			sql += "upc = " + "'" + upc + "'";
 		}
-		if(beerStyle != null) {
-			sql += "AND beer_style = " + "'" + beerStyle.name() + "'" + ";";
+		if(beerStyle != null && beerName == null && upc == null) {
+			sql += "beer_style = " + "'" + beerStyle.name() + "'" + ";";
 		}
 		
 		return jdbcTemplate.query(sql, 
@@ -95,12 +103,14 @@ public class BeerService {
 				));
 	}
 
-	public void updateBeer(List<BeerRecord> beerByParam, BeerRecord beerRecord) {
+	public void updateBeer(BeerRecord beerRecord, Map<String, Integer> beerMap) {
 		
 		String oldBeer = "";
 		String newBeer = "";
 		
 		int oldCount = getBeerCount();
+		
+		List<BeerRecord> beerByParam = findBeersByParams(null, beerRecord.upc(), null);
 		
 		Beer beer = new Beer();
 		for(BeerRecord rec : beerByParam) {
@@ -132,9 +142,12 @@ public class BeerService {
 			beer.setPrice(beerRecord.price());
 		}
 		int newCount = getBeerCount();
+		
 		newBeer = beer.toString();
+		
 		beerRepository.save(beer);
 		beerOperationService.save(oldCount, newCount, oldBeer, newBeer);
+		beerMap.put(beer.getUpc(), beer.hashCode());
 	}
 
 }
