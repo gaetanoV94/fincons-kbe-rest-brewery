@@ -1,5 +1,6 @@
 package guru.springframework.sfgrestbrewery.service;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -26,32 +28,70 @@ public class ScheduledService {
 	@Autowired
 	private BeerService service;
 	
+	@Value("${spring.jpa.hibernate.ddl-auto}")
+	private String jpaHibernateStatus;
+	
+	private Map<String, Integer> oldBeerMap = new LinkedHashMap<>();
+	
 	@Scheduled(cron = "0 */1 * ? * *")
-	public void getBeersModifications() {
+	public void getBeersModifications() throws IOException {
 		
-		Map<String, Integer> oldBeerMap = loader.getBeerMap();
+		if(jpaHibernateStatus.equals("update")) {
+			if(oldBeerMap.isEmpty()) {
+				String emptyBeerMapMessage = "Old beer map: " + oldBeerMap + " - " + "The old beer map must be filled before any comparison";
+				log.info(emptyBeerMapMessage);
+				for(Beer beer : service.getAllBeers()) {
+					oldBeerMap.put(beer.getUpc(), beer.hashCode());
+				}
+				log.info("The old beer map is now ready to be compared");
+			}
+			else {
+				compareBeerMaps(oldBeerMap);
+			}
+			
+		}
+		if(jpaHibernateStatus.equals("create-drop")) {
+			oldBeerMap = loader.getBeerMap();
+			compareBeerMaps(oldBeerMap);
+		}
+	}
+	
+	private void compareBeerMaps(Map<String, Integer> oldBeerMap){
+		
 		Map<String, Integer> newBeerMap = new LinkedHashMap<>();
 		for(Beer beer : service.getAllBeers()) {
 			newBeerMap.put(beer.getUpc(), beer.hashCode());
 		}
+		log.info("Old beer map: " + oldBeerMap + "\n" 
+				+ "New beer map: " + newBeerMap + "\n");
 		areEqualWithArrayValue(oldBeerMap, newBeerMap);
+		oldBeerMap = newBeerMap;
+		
 	}
 	
-	private void areEqualWithArrayValue(Map<String, Integer> first, Map<String, Integer> second) {
+	private void areEqualWithArrayValue(Map<String, Integer> first, Map<String, Integer> second){
         
 		if(first.size() > second.size()) {
 			HashSet<String> deletedUpcInDB = 
 					new HashSet<>(first.keySet());
 			deletedUpcInDB.removeAll(second.keySet());
-			log.info("the upc {} has been deleted from the Database"
-					, deletedUpcInDB.toString().replace("[", "").replace("]", ""));
+			String deleteMessage = "the upc" 
+					+ deletedUpcInDB.toString()
+						.replace("[", "")
+						.replace("]", "") 
+					+ " has been deleted from the Database";
+			log.info(deleteMessage);
 		}
 		else if(first.size() < second.size()) {
 			HashSet<String> addedUpcInDB = 
 					new HashSet<>(second.keySet());
 			addedUpcInDB.removeAll(first.keySet());
-			log.info("the upc {} has been added from the Database"
-					, addedUpcInDB.toString().replace("[", "").replace("]", ""));
+			String addMessage = "the upc" 
+					+ addedUpcInDB.toString()
+						.replace("[", "")
+						.replace("]", "") 
+					+ " has been added from the Database";
+			log.info(addMessage);
 		}
 		else if(first.size() == second.size()) {
 			
@@ -70,13 +110,17 @@ public class ScheduledService {
 		              .collect(Collectors.toSet());
 			
 			if(updatedUpcInDB.isEmpty()) {
-				log.info("There were no updates on the DB");
+				String noUpdateMessage = "There were no updates on the DB";
+				log.info(noUpdateMessage);
 			}
 			else {
-				log.info("The row with upc {} has been updated",
-						updatedUpcInDB.toString().replace("[", "").replace("]", ""));
-			}
-						
+				String updateMessage = "the upc" 
+						+ updatedUpcInDB.toString()
+							.replace("[", "")
+							.replace("]", "") 
+						+ " has been updated in the Database";
+				log.info(updateMessage);
+			}			
 		}
     }
 
