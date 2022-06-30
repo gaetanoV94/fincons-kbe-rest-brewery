@@ -4,34 +4,58 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
-public class BeerOrderLine extends BaseEntity {
+public class BeerOrderLine {
+
+    public BeerOrderLine(BeerOrderLineKey key) {
+        this.id = key;
+    }
 
     @Builder
-    public BeerOrderLine(Long id, Long version, Timestamp createdDate, Timestamp lastModifiedDate,
+    public BeerOrderLine(Long version, Timestamp createdDate, Timestamp lastModifiedDate,
                          BeerOrder beerOrder, Beer beer, Integer orderQuantity,
                          Integer quantityAllocated) {
-        super(id, version, createdDate, lastModifiedDate);
+        this.version = version;
+        this.createdDate = createdDate;
+        this.lastModifiedDate = lastModifiedDate;
         this.beerOrder = beerOrder;
         this.beer = beer;
         this.orderQuantity = orderQuantity;
         this.quantityAllocated = quantityAllocated;
     }
 
+    @EmbeddedId
+    private BeerOrderLineKey id;
+
     @ManyToOne
+    @MapsId("id")
+    @JoinColumn(name = "BEER_ORDER_ID")
     private BeerOrder beerOrder;
 
     @ManyToOne
+    @MapsId("id")
+    @JoinColumn(name = "BEER_ID")
     private Beer beer;
 
     private Integer orderQuantity = 0;
     private Integer quantityAllocated = 0;
+
+    @Version
+    private Long version;
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private Timestamp createdDate;
+
+    @UpdateTimestamp
+    private Timestamp lastModifiedDate;
 }

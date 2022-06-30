@@ -7,6 +7,7 @@ import com.finconsgroup.kberestbrewery.web.model.BeerStyleEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,7 @@ public class BeerRestController {
 
     private final BeerService beerService;
 
-    @GetMapping(produces = {"application/json"}, path = "beer")
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "beer")
     public ResponseEntity<BeerList> listBeers(@RequestParam(value = "beerName", required = false) String beerName,
                                               @RequestParam(value = "beerStyle", required = false) BeerStyleEnum beerStyle,
                                               @RequestParam(value = "showInventoryOnHand", required = false) Boolean showInventoryOnHand) {
@@ -36,7 +37,7 @@ public class BeerRestController {
 
         BeerList beerList = beerService.listBeers(beerName, beerStyle, showInventoryOnHand);
 
-        return new ResponseEntity<>(beerList, HttpStatus.OK);
+        return new ResponseEntity<BeerList>(beerList, HttpStatus.OK);
     }
 
     @GetMapping(path = {"beer/{beerId}"}, produces = {"application/json"})

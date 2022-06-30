@@ -1,25 +1,39 @@
 package com.finconsgroup.kberestbrewery.web.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
 
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class BeerOrderLineDto extends BaseItem {
+public class BeerOrderLineDto {
 
     @Builder
-    public BeerOrderLineDto(Long id, Integer version, OffsetDateTime createdDate, OffsetDateTime lastModifiedDate,
+    public BeerOrderLineDto(Integer version, OffsetDateTime createdDate, OffsetDateTime lastModifiedDate,
                             Long beerId, Integer orderQuantity) {
-        super(id, version, createdDate, lastModifiedDate);
+        this.version = version;
+        this.createdDate = createdDate;
+        this.lastModifiedDate = lastModifiedDate;
         this.beerId = beerId;
         this.orderQuantity = orderQuantity;
     }
 
     private Long beerId;
+    private Long beerOrderId;
     private Integer orderQuantity = 0;
+
+    @JsonProperty("version")
+    private Integer version = null;
+
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ssZ", shape=JsonFormat.Shape.STRING)
+    @JsonProperty("createdDate")
+    private OffsetDateTime createdDate = null;
+
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ssZ", shape=JsonFormat.Shape.STRING)
+    @JsonProperty("lastModifiedDate")
+    private OffsetDateTime lastModifiedDate = null;
 }

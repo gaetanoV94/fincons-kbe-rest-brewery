@@ -13,6 +13,7 @@ public abstract class BeerMapperDecorator implements BeerMapper{
     @Autowired
     @Qualifier("delegate")
     public void setBeerMapper(BeerMapper beerMapper) {
+
         this.beerMapper = beerMapper;
     }
 
