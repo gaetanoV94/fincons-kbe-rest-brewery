@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -68,7 +69,24 @@ public class BeerRestController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
+    }
 
+    @PostMapping(path = "beer/runtimeException")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void saveNewBeerRuntimeException(@Valid @RequestBody BeerDto beerDto) {
+        beerService.saveBeerWithRuntimeException(beerDto);
+    }
+
+    @PostMapping(path = "beer/checkedException")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void saveNewBeerCheckedException(@Valid @RequestBody BeerDto beerDto) throws SQLException {
+        beerService.saveBeerWithCheckedException(beerDto);
+    }
+
+    @PostMapping(path = "beer/noRollBack")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void saveNewBeerNoRollBack(@Valid @RequestBody BeerDto beerDto) throws Exception {
+        beerService.saveBeerWithNoRollBack(beerDto);
     }
 
     @PutMapping(path = {"beer/{beerId}"}, produces = {"application/json"})

@@ -8,12 +8,14 @@ import com.finconsgroup.kberestbrewery.web.model.BeerList;
 import com.finconsgroup.kberestbrewery.web.model.BeerStyleEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.transaction.Transactional;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -82,12 +84,12 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class, value = Transactional.TxType.REQUIRED)
+    @Transactional(rollbackFor = { Exception.class })
     public BeerDto saveBeer(BeerDto beerDto) throws Exception {
         try {
             return beerMapper.beerToBeerDto(beerRepository.save(beerMapper.beerDtoToBeer(beerDto)));
         } catch (Exception e) {
-            throw new Exception("Error during product creation");
+            throw new Exception("Error during beer creation");
         }
     }
 
@@ -135,5 +137,26 @@ public class BeerServiceImpl implements BeerService {
         }
 
         return;
+    }
+
+    @Override
+    @Transactional
+    public void saveBeerWithRuntimeException(BeerDto beerDto) {
+        beerRepository.save(beerMapper.beerDtoToBeer(beerDto));
+        throw new DataIntegrityViolationException("Throwing exception for demoing Rollback!!!");
+    }
+
+    @Override
+    @Transactional(rollbackFor = { SQLException.class })
+    public void saveBeerWithCheckedException(BeerDto beerDto) throws SQLException {
+        beerRepository.save(beerMapper.beerDtoToBeer(beerDto));
+        throw new SQLException("Throwing exception for demoing Rollback!!!");
+    }
+
+    @Override
+    @Transactional(noRollbackFor = { SQLException.class })
+    public void saveBeerWithNoRollBack(BeerDto beerDto) throws Exception {
+        this.saveBeer(beerDto);
+        throw new SQLException("Throwing exception for demoing Rollback!!!");
     }
 }
