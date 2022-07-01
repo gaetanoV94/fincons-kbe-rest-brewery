@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.sql.Timestamp;
 
@@ -23,7 +25,8 @@ public class BeerInventory extends BaseEntity {
         this.quantityOnHand = quantityOnHand;
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="BEER_ID", referencedColumnName="ID")
     private Beer beer;
 
     private Integer quantityOnHand = 0;

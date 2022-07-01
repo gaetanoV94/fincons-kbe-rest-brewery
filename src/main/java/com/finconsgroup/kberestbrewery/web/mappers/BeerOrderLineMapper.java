@@ -16,5 +16,6 @@ public interface BeerOrderLineMapper {
     @Mapping(target = "beerOrder", ignore = true)
     @Mapping(target = "beer", ignore = true)
     @Mapping(target = "quantityAllocated", ignore = true)
+    @Mapping(target = "key", ignore = true)
     BeerOrderLine dtoToBeerOrderLine(BeerOrderLineDto dto);
 }

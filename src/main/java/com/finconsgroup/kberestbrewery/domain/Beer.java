@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -48,10 +46,6 @@ public class Beer extends BaseEntity {
     private Integer quantityToBrew;
     private BigDecimal price;
 
-    @OneToMany(mappedBy = "beer", cascade = CascadeType.ALL)
-    @Fetch(FetchMode.JOIN)
+    @OneToMany(mappedBy = "beer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<BeerInventory> beerInventory = new HashSet<>();
-
-    @OneToMany(mappedBy = "beer")
-    private Set<BeerOrderLine> beerOrderLines;
 }
