@@ -1,14 +1,15 @@
 package com.finconsgroup.kberestbrewery.services;
 
 
+import com.finconsgroup.kberestbrewery.domain.BeerOrder;
 import com.finconsgroup.kberestbrewery.domain.Customer;
+import com.finconsgroup.kberestbrewery.domain.OrderStatusEnum;
+import com.finconsgroup.kberestbrewery.repositories.BeerOrderRepository;
+import com.finconsgroup.kberestbrewery.repositories.BeerRepository;
 import com.finconsgroup.kberestbrewery.repositories.CustomerRepository;
 import com.finconsgroup.kberestbrewery.web.mappers.BeerOrderMapper;
 import com.finconsgroup.kberestbrewery.web.model.BeerOrderDto;
 import com.finconsgroup.kberestbrewery.web.model.BeerOrderList;
-import com.finconsgroup.kberestbrewery.domain.BeerOrder;
-import com.finconsgroup.kberestbrewery.domain.OrderStatusEnum;
-import com.finconsgroup.kberestbrewery.repositories.BeerOrderRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,8 @@ public class BeerOrderServiceImpl implements BeerOrderService {
 
     private final BeerOrderRepository beerOrderRepository;
     private final CustomerRepository customerRepository;
+    private final BeerRepository beerRepository;
+
     private final BeerOrderMapper beerOrderMapper;
 
     @Override
@@ -54,8 +57,11 @@ public class BeerOrderServiceImpl implements BeerOrderService {
             beerOrder.setId(null); //should not be set by outside client
             beerOrder.setCustomer(customerOptional.get());
             beerOrder.setOrderStatus(OrderStatusEnum.NEW);
-
-            beerOrder.getBeerOrderLines().forEach(line -> line.setBeerOrder(beerOrder));
+            beerOrder.getBeerOrderLines().forEach(line ->
+            {
+                line.setBeerOrder(beerOrder);
+                line.setBeer(beerRepository.findByUpc(line.getUpc()));
+            });
 
             BeerOrder savedBeerOrder = beerOrderRepository.saveAndFlush(beerOrder);
 

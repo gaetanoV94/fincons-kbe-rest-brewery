@@ -31,7 +31,7 @@ public class BeerOrder extends BaseEntity {
     @JoinColumn(name = "customerId", nullable = false)
     private Customer customer;
 
-    @OneToMany(mappedBy = "beerOrder")
+    @OneToMany(mappedBy = "beerOrder", cascade = CascadeType.ALL)
     private Set<BeerOrderLine> beerOrderLines;
 
     private OrderStatusEnum orderStatus = OrderStatusEnum.NEW;

@@ -23,7 +23,7 @@ public class BeerOrderLine {
     @Builder
     public BeerOrderLine(Long version, Timestamp createdDate, Timestamp lastModifiedDate,
                          BeerOrder beerOrder, Beer beer, Integer orderQuantity,
-                         Integer quantityAllocated) {
+                         Integer quantityAllocated, String upc) {
         this.version = version;
         this.createdDate = createdDate;
         this.lastModifiedDate = lastModifiedDate;
@@ -31,6 +31,7 @@ public class BeerOrderLine {
         this.beer = beer;
         this.orderQuantity = orderQuantity;
         this.quantityAllocated = quantityAllocated;
+        this.upc = upc;
     }
 
     @EmbeddedId
@@ -48,6 +49,7 @@ public class BeerOrderLine {
 
     private Integer orderQuantity = 0;
     private Integer quantityAllocated = 0;
+    private String upc;
 
     @Version
     private Long version;

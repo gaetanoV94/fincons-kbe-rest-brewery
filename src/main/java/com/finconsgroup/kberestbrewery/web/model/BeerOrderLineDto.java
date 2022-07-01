@@ -14,15 +14,17 @@ public class BeerOrderLineDto {
 
     @Builder
     public BeerOrderLineDto(Integer version, OffsetDateTime createdDate, OffsetDateTime lastModifiedDate,
-                            Long beerId, Integer orderQuantity) {
+                            Long beerId, String upc, Integer orderQuantity) {
         this.version = version;
         this.createdDate = createdDate;
         this.lastModifiedDate = lastModifiedDate;
         this.beerId = beerId;
+        this.upc = upc;
         this.orderQuantity = orderQuantity;
     }
 
     private Long beerId;
+    private String upc;
     private Long beerOrderId;
     private Integer orderQuantity = 0;
 

@@ -37,9 +37,8 @@ public abstract class BeerOrderLineMapperDecorator implements BeerOrderLineMappe
     @Override
     public BeerOrderLine dtoToBeerOrderLine(BeerOrderLineDto dto) {
         BeerOrderLine beerOrderLine = beerOrderLineMapper.dtoToBeerOrderLine(dto);
-        beerOrderLine.setBeer(beerRepository.getOne(dto.getBeerId()));
-        beerOrderLine.setBeerOrder(beerOrderRepository.getOne(dto.getBeerOrderId()));
         beerOrderLine.setQuantityAllocated(0);
+        beerOrderLine.setUpc(dto.getUpc());
         return beerOrderLine;
     }
 }

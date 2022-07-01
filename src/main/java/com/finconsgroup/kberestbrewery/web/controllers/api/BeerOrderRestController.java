@@ -28,10 +28,10 @@ public class BeerOrderRestController {
     }
 
     @PostMapping(path = "customers/{customerId}/orders")
-    public ResponseEntity createOrder(@RequestParam(value = "customerId", required = true) Long customerId, @Valid @RequestBody BeerOrderDto beerOrderDto) {
+    public ResponseEntity createOrder(@RequestParam(value = "customerId", required = false) Long customerId, @Valid @RequestBody BeerOrderDto beerOrderDto) {
 
         try {
-            return new ResponseEntity(orderService.placeOrder(customerId, beerOrderDto), HttpStatus.CREATED);
+            return new ResponseEntity(orderService.placeOrder(beerOrderDto.getCustomerId(), beerOrderDto), HttpStatus.CREATED);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
