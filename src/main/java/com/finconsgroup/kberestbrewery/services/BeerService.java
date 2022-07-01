@@ -17,4 +17,6 @@ public interface BeerService {
     void deleteById(Long beerId);
 
     BeerDto findBeerByUpc(String upc);
+
+    void simulateOptimisticLock(Long id, String s);
 }

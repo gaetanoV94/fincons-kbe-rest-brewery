@@ -15,6 +15,8 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -80,7 +82,22 @@ public class BeerRestController {
     @DeleteMapping({"beer/{beerId}"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBeer(@PathVariable("beerId") Long beerId) {
+
         beerService.deleteById(beerId);
+    }
+
+    /**
+     * simulate an Optimistick lock
+     */
+    @PutMapping(value = "/beer/{beerId}/optimistic")
+    ResponseEntity<Object> simulateOptimisticLockBeer(@PathVariable("beerId") Long beerId, @RequestBody BeerDto beer) {
+        log.info("simulate optimistic locking");
+        final ExecutorService executor = Executors.newFixedThreadPool(2);
+
+        executor.execute(() -> beerService.simulateOptimisticLock(beerId, "Ice Blonde"));
+        executor.execute(() -> beerService.simulateOptimisticLock(beerId, "Dark Red"));
+
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

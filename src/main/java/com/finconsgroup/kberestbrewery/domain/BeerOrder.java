@@ -28,7 +28,7 @@ public class BeerOrder extends BaseEntity {
     private String customerRef;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CUSTOMER_ID")
+    @JoinColumn(name = "CUSTOMER_ID", referencedColumnName="ID")
     private Customer customer;
 
     @OneToMany(mappedBy = "beerOrder")

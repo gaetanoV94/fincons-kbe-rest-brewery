@@ -13,10 +13,13 @@ import java.time.OffsetDateTime;
 public class CustomerDto extends BaseItem {
 
     @Builder
-    public CustomerDto(Long id, Integer version, OffsetDateTime createdDate, OffsetDateTime lastModifiedDate, String name) {
+    public CustomerDto(Long id, Integer version, OffsetDateTime createdDate, OffsetDateTime lastModifiedDate, String name, Integer numberOfOrders) {
         super(id, version, createdDate, lastModifiedDate);
         this.name = name;
+        this.numberOfOrders = numberOfOrders;
     }
+
+    private Integer numberOfOrders;
 
     private String name;
 }

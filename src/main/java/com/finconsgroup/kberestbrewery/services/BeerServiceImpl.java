@@ -115,4 +115,25 @@ public class BeerServiceImpl implements BeerService {
     public BeerDto findBeerByUpc(String upc) {
         return beerMapper.beerToBeerDto(beerRepository.findByUpc(upc));
     }
+
+    @Override
+    public void simulateOptimisticLock(Long id, String name) {
+
+        try {
+            Optional<Beer> beerOptional = beerRepository.findById(id);
+            if (beerOptional.isEmpty()) {
+                throw new Exception("Beer not found");
+            }
+            Beer beer = beerOptional.get();
+            beer.setBeerName(name);
+            beer = beerRepository.save(beer);
+            log.info("Saved beer with version {}", beer.getVersion());
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return;
+    }
 }

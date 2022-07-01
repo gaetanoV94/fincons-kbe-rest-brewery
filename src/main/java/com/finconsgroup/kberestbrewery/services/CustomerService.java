@@ -9,7 +9,7 @@ public interface CustomerService {
 
     CustomerDto findCustomerById(Long customerId);
 
-    Object createUser(CustomerDto customer);
+    CustomerDto createCustomer(CustomerDto customer);
 
     void deleteById(Long customerId);
 

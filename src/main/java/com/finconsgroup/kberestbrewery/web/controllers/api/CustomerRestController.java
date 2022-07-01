@@ -35,7 +35,7 @@ public class CustomerRestController {
     @PostMapping(path = "customers")
     ResponseEntity addCustomer(@RequestBody CustomerDto customer) {
         try {
-            return new ResponseEntity(customerService.createUser(customer), HttpStatus.CREATED);
+            return new ResponseEntity(customerService.createCustomer(customer), HttpStatus.CREATED);
         } catch (Exception e) {
             log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
