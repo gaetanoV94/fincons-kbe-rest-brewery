@@ -27,11 +27,11 @@ public class BeerOrder extends BaseEntity {
 
     private String customerRef;
 
-    @ManyToOne(fetch = FetchType.LAZY) // fare il test con il featch EAGHER durante la lista dei customer
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customerId", nullable = false)
     private Customer customer;
 
-    @OneToMany(mappedBy = "beerOrder", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "beerOrder")
     private Set<BeerOrderLine> beerOrderLines;
 
     private OrderStatusEnum orderStatus = OrderStatusEnum.NEW;

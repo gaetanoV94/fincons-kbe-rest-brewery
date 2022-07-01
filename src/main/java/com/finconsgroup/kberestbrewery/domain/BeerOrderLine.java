@@ -17,13 +17,14 @@ import java.sql.Timestamp;
 public class BeerOrderLine {
 
     public BeerOrderLine(BeerOrderLineKey key) {
-        this.id = key;
+        this.beerOrderLineKey = key;
     }
 
     @Builder
-    public BeerOrderLine(Long version, Timestamp createdDate, Timestamp lastModifiedDate,
+    public BeerOrderLine(BeerOrderLineKey key, Long version, Timestamp createdDate, Timestamp lastModifiedDate,
                          BeerOrder beerOrder, Beer beer, Integer orderQuantity,
                          Integer quantityAllocated, String upc) {
+        this.beerOrderLineKey = key;
         this.version = version;
         this.createdDate = createdDate;
         this.lastModifiedDate = lastModifiedDate;
@@ -35,7 +36,7 @@ public class BeerOrderLine {
     }
 
     @EmbeddedId
-    private BeerOrderLineKey id;
+    private BeerOrderLineKey beerOrderLineKey;
 
     @ManyToOne
     @MapsId("id")

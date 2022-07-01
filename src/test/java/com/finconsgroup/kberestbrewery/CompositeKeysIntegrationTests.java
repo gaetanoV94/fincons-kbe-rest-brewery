@@ -33,9 +33,9 @@ public class CompositeKeysIntegrationTests {
 
     private void verifyAssertionsWith(BeerOrderLine savedBeerOrderLine) {
         assertNotNull(savedBeerOrderLine);
-        assertNotNull(savedBeerOrderLine.getId());
-        assertEquals(BEER_ID, savedBeerOrderLine.getId().getBeerId());
-        assertEquals(BEER_ORDER_ID, savedBeerOrderLine.getId().getBeerOrderId());
+        assertNotNull(savedBeerOrderLine.getBeerOrderLineKey());
+        assertEquals(BEER_ID, savedBeerOrderLine.getBeerOrderLineKey().getBeerId());
+        assertEquals(BEER_ORDER_ID, savedBeerOrderLine.getBeerOrderLineKey().getBeerOrderId());
     }
 
     private BeerOrderLine findBeerOrderLineById() {

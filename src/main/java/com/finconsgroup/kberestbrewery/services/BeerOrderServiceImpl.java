@@ -2,8 +2,10 @@ package com.finconsgroup.kberestbrewery.services;
 
 
 import com.finconsgroup.kberestbrewery.domain.BeerOrder;
+import com.finconsgroup.kberestbrewery.domain.BeerOrderLineKey;
 import com.finconsgroup.kberestbrewery.domain.Customer;
 import com.finconsgroup.kberestbrewery.domain.OrderStatusEnum;
+import com.finconsgroup.kberestbrewery.repositories.BeerOrderLineRepository;
 import com.finconsgroup.kberestbrewery.repositories.BeerOrderRepository;
 import com.finconsgroup.kberestbrewery.repositories.BeerRepository;
 import com.finconsgroup.kberestbrewery.repositories.CustomerRepository;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 public class BeerOrderServiceImpl implements BeerOrderService {
 
     private final BeerOrderRepository beerOrderRepository;
+    private final BeerOrderLineRepository beerOrderLineRepository;
     private final CustomerRepository customerRepository;
     private final BeerRepository beerRepository;
 
@@ -61,9 +64,15 @@ public class BeerOrderServiceImpl implements BeerOrderService {
             {
                 line.setBeerOrder(beerOrder);
                 line.setBeer(beerRepository.findByUpc(line.getUpc()));
+                BeerOrderLineKey key = new BeerOrderLineKey();
+                key.setBeerId(line.getBeer().getId());
+                line.setBeerOrderLineKey(key);
             });
-
-            BeerOrder savedBeerOrder = beerOrderRepository.saveAndFlush(beerOrder);
+            BeerOrder savedBeerOrder = beerOrderRepository.save(beerOrder);
+            savedBeerOrder.getBeerOrderLines().forEach(beerOrderLine -> {
+                beerOrderLine.getBeerOrderLineKey().setBeerOrderId(savedBeerOrder.getId());
+                beerOrderLineRepository.save(beerOrderLine);
+            });
 
             log.debug("Saved Beer Order: " + beerOrder.getId());
 

@@ -1,9 +1,6 @@
 package com.finconsgroup.kberestbrewery.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -14,6 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Getter
+@Setter
 public class BeerOrderLineKey implements Serializable {
 
     @Column(name = "BEER_ORDER_ID")

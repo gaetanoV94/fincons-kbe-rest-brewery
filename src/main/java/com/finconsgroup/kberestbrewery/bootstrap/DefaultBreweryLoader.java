@@ -1,13 +1,14 @@
 package com.finconsgroup.kberestbrewery.bootstrap;
 
-import com.finconsgroup.kberestbrewery.domain.*;
+import com.finconsgroup.kberestbrewery.domain.Beer;
+import com.finconsgroup.kberestbrewery.domain.BeerInventory;
+import com.finconsgroup.kberestbrewery.domain.Brewery;
+import com.finconsgroup.kberestbrewery.domain.Customer;
 import com.finconsgroup.kberestbrewery.repositories.*;
 import com.finconsgroup.kberestbrewery.web.model.BeerStyleEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
-import java.util.Set;
 
 @RequiredArgsConstructor
 @Component
@@ -22,6 +23,7 @@ public class DefaultBreweryLoader implements CommandLineRunner {
     private final BeerRepository beerRepository;
     private final BeerInventoryRepository beerInventoryRepository;
     private final BeerOrderRepository beerOrderRepository;
+    private final BeerOrderLineRepository beerOrderLineRepository;
     private final CustomerRepository customerRepository;
 
     @Override
@@ -37,16 +39,6 @@ public class DefaultBreweryLoader implements CommandLineRunner {
 
         customerRepository.save(tastingRoom);
 
-        beerRepository.findAll().forEach(beer -> {
-            beerOrderRepository.save(BeerOrder.builder()
-                    .customer(tastingRoom)
-                    .orderStatus(OrderStatusEnum.NEW)
-                    .beerOrderLines(Set.of(BeerOrderLine.builder()
-                            .beer(beer)
-                            .orderQuantity(2)
-                            .build()))
-                    .build());
-        });
     }
 
     private void loadBreweryData() {
