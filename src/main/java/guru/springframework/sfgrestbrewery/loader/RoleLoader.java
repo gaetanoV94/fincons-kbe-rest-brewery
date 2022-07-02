@@ -7,7 +7,7 @@ import guru.springframework.sfgrestbrewery.model.ERole;
 import guru.springframework.sfgrestbrewery.model.Role;
 import guru.springframework.sfgrestbrewery.repository.RoleRepository;
 
-@Component
+//@Component
 public class RoleLoader implements CommandLineRunner{
 	
 	private RoleRepository roleRepository;
@@ -18,7 +18,7 @@ public class RoleLoader implements CommandLineRunner{
 	
 	@Override
     public void run(String... args) throws Exception {
-        loadRoleObjects();
+        //loadRoleObjects();
     }
 	
 	private synchronized void loadRoleObjects() {
