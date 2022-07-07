@@ -5,11 +5,14 @@ import com.finconsgroup.kberestbrewery.web.model.BeerOrderDto;
 import com.finconsgroup.kberestbrewery.web.model.BeerOrderList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -17,6 +20,7 @@ import javax.validation.Valid;
 @RestController
 public class BeerOrderRestController {
 
+    @Autowired
     private final BeerOrderService orderService;
 
     @GetMapping(produces = {"application/json"}, path = "customers/{customerId}/orders")
@@ -49,6 +53,19 @@ public class BeerOrderRestController {
     public ResponseEntity pickupCustomerOrder(@PathVariable("customerId") Long customerId, @PathVariable("orderId") Long orderId) {
         orderService.pickupOrder(customerId, orderId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(path = {"orders/{orderId}"}, produces = {"application/json"})
+    public ResponseEntity<BeerOrderDto> getOrderById(@PathVariable("orderId") Long orderId) {
+
+        log.debug("Getting order by id");
+
+        final ExecutorService executor = Executors.newFixedThreadPool(2);
+
+        executor.execute(() -> orderService.getOneOrderById(orderId));
+        executor.execute(() -> orderService.pickupOrder(1l, orderId));
+
+        return new ResponseEntity<>(orderService.getOneOrderById(orderId), HttpStatus.OK);
     }
 
 }

@@ -36,7 +36,7 @@ public class CascadeTypesTests {
     }
 
     /* The persist operation makes a transient instance persistent. Cascade Type PERSIST propagates
-     * the persist operation from a parent to a child entity. When we save the person entity, the address entity will also get saved.
+     * the persist operation from a parent to a child entity. When we save the beer entity, the beerInventory entity will also get saved.
      *
      * insert into Beer (id, createdDate, lastModifiedDate, version, beerName, beerStyle, minOnHand, price, quantityToBrew, upc) values (null, ?, ?, ?, ?, ?, ?, ?, ?, ?)
      * insert into BeerInventory (id, createdDate, lastModifiedDate, version, beer_id, quantityOnHand) values (null, ?, ?, ?, ?, ?)

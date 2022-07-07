@@ -13,4 +13,6 @@ public interface BeerOrderService {
     BeerOrderDto getOrderById(Long customerId, Long orderId);
 
     void pickupOrder(Long customerId, Long orderId);
+
+    BeerOrderDto getOneOrderById(Long orderId);
 }

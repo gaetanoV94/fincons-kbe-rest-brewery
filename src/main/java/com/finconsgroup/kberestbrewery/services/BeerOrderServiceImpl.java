@@ -14,7 +14,7 @@ import com.finconsgroup.kberestbrewery.web.model.BeerOrderDto;
 import com.finconsgroup.kberestbrewery.web.model.BeerOrderList;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Service
+//@Service
 @AllArgsConstructor
 public class BeerOrderServiceImpl implements BeerOrderService {
 
@@ -69,14 +69,17 @@ public class BeerOrderServiceImpl implements BeerOrderService {
                 line.setBeerOrderLineKey(key);
             });
             BeerOrder savedBeerOrder = beerOrderRepository.save(beerOrder);
+
             savedBeerOrder.getBeerOrderLines().forEach(beerOrderLine -> {
                 beerOrderLine.getBeerOrderLineKey().setBeerOrderId(savedBeerOrder.getId());
                 beerOrderLineRepository.save(beerOrderLine);
             });
 
-            log.debug("Saved Beer Order: " + beerOrder.getId());
+            throw new DataIntegrityViolationException("Demoing exception");
 
-            return beerOrderMapper.beerOrderToDto(savedBeerOrder);
+            /*log.debug("Saved Beer Order: " + beerOrder.getId());
+
+            return beerOrderMapper.beerOrderToDto(savedBeerOrder);*/
         }
         //todo add exception type
         throw new RuntimeException("Customer Not Found");
@@ -92,6 +95,12 @@ public class BeerOrderServiceImpl implements BeerOrderService {
         BeerOrder beerOrder = getOrder(customerId, orderId);
         beerOrder.setOrderStatus(OrderStatusEnum.PICKED_UP);
         beerOrderRepository.save(beerOrder);
+    }
+
+    @Override
+    @Transactional
+    public BeerOrderDto getOneOrderById(Long orderId) {
+       return beerOrderMapper.beerOrderToDto(beerOrderRepository.findOneById(orderId));
     }
 
     private BeerOrder getOrder(Long customerId, Long orderId){

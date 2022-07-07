@@ -53,10 +53,11 @@ public class DefaultBreweryLoader implements CommandLineRunner {
 
     private void loadBreweryData() {
         if (breweryRepository.count() == 0) {
-            breweryRepository.save(Brewery
+            Brewery brewery = Brewery
                     .builder()
                     .breweryName("Cage Brewing")
-                    .build());
+                    .build();
+            breweryRepository.save(brewery);
 
             Beer mangoBobs = Beer.builder()
                     .beerName("Mango Bobs")

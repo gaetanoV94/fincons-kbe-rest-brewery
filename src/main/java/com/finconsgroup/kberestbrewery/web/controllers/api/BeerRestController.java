@@ -74,7 +74,11 @@ public class BeerRestController {
     @PostMapping(path = "beer/runtimeException")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void saveNewBeerRuntimeException(@Valid @RequestBody BeerDto beerDto) {
-        beerService.saveBeerWithRuntimeException(beerDto);
+        try {
+            beerService.saveBeerWithRuntimeException(beerDto);
+        } catch (RuntimeException exception) {
+            log.error(exception.getMessage());
+        }
     }
 
     @PostMapping(path = "beer/checkedException")

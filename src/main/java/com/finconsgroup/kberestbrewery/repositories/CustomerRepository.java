@@ -8,4 +8,6 @@ import java.util.List;
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     List<Customer> findAllByCustomerNameLike(String customerName);
+
+    List<Customer> findByCustomerName(String customerName);
 }

@@ -8,7 +8,9 @@ import com.finconsgroup.kberestbrewery.web.model.CustomerList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,12 +26,20 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerList listCustomers(String customerName) {
         log.debug("Listing Customers");
 
-        List<Customer> customers = customerRepository.findAll();
+        List<Customer> customers = new ArrayList<>();
+
+        if(!ObjectUtils.isEmpty(customerName)) {
+            //customers = customerRepository.findAllByCustomerNameLike(customerName);
+            customers = customerRepository.findByCustomerName(customerName);
+        } else {
+            customers = customerRepository.findAll();
+        }
 
         CustomerList customerList = new CustomerList(customers
                 .stream()
                 .map(customerMapper::customerToCustomerDto)
                 .collect(Collectors.toList()));
+
         return customerList;
     }
 
@@ -40,6 +50,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDto createCustomer(CustomerDto customer) {
+
         return null;
     }
 

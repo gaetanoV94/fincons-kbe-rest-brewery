@@ -8,7 +8,6 @@ import com.finconsgroup.kberestbrewery.web.model.BeerList;
 import com.finconsgroup.kberestbrewery.web.model.BeerStyleEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -110,7 +109,9 @@ public class BeerServiceImpl implements BeerService {
 
     @Override
     public void deleteById(Long beerId) {
+
         beerRepository.deleteById(beerId);
+
     }
 
     @Override
@@ -143,14 +144,14 @@ public class BeerServiceImpl implements BeerService {
     @Transactional
     public void saveBeerWithRuntimeException(BeerDto beerDto) {
         beerRepository.save(beerMapper.beerDtoToBeer(beerDto));
-        throw new DataIntegrityViolationException("Throwing exception for demoing Rollback!!!");
+        //throw new DataIntegrityViolationException("Throwing exception for demoing Rollback!!!");
     }
 
     @Override
-    @Transactional(rollbackFor = { SQLException.class })
+    @Transactional(rollbackFor = { SQLException.class, IllegalArgumentException.class })
     public void saveBeerWithCheckedException(BeerDto beerDto) throws SQLException {
         beerRepository.save(beerMapper.beerDtoToBeer(beerDto));
-        throw new SQLException("Throwing exception for demoing Rollback!!!");
+        throw new SQLException();
     }
 
     @Override
