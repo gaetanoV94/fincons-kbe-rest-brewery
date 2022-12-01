@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import guru.springframework.sfgrestbrewery.domain.User;
 import guru.springframework.sfgrestbrewery.repositories.UserRepository;
+import guru.springframework.sfgrestbrewery.security.CustomUserDetails;
 //import guru.springframework.sfgrestbrewery.security.CustomUserDetails;
 
 @Service
@@ -68,11 +69,10 @@ public class UserService implements UserDetailsService{
 	
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
 		
-		/*User user = userRepository.findByUsername(username);
+		User user = userRepository.findByUsername(username);
 		if(user == null) {
 			throw new UsernameNotFoundException("User not found");
 		}
-		return new CustomUserDetails(user);*/
-		return null;
+		return new CustomUserDetails(user);
 	}
 }
